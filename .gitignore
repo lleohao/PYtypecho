@@ -55,3 +55,7 @@ docs/_build/
 
 # PyBuilder
 target/
+.idea/
+venv/
+.idea/inspectionProfiles/profiles_settings.xml
+.idea/inspectionProfiles/Project_Default.xml
