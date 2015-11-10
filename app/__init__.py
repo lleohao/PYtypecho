@@ -20,11 +20,7 @@ def create_app(config_name):
     mongo.init_app(app)
     login_manager.init_app(app)
 
-    from .admin import admin as admin_blueprint
+    from admin import admin as admin_blueprint
     app.register_blueprint(admin_blueprint)
 
     return app
-
-if __name__ == "__main__":
-    app = create_app("default")
-    app.run()
