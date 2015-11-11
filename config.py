@@ -1,7 +1,8 @@
 import os
 
 class Config:
-    SECRET_KET = os.environ.get("SECRET_KEY") or "just so so"
+    SECRET_KEY = "devkey"
+    BOOTSTRAP_SERVE_LOCAL = True
 
     @staticmethod
     def init_app(app):
@@ -10,11 +11,16 @@ class Config:
 
 class DevelopmentConfig(Config):
     DEBUG = True
-    MONGO_DBNAME = "devblog"
+    MONGODB_SETTINGS = {
+        "DB": "devblog"
+    }
+
 
 
 class ProductionConfig(Config):
-    MONGO_DBNAME = "blog"
+    MONGODB_SETTINGS = {
+        "DB": "blog"
+    }
 
 
 config = {
