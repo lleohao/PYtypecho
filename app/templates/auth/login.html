@@ -1,0 +1,17 @@
+{% extends "auth/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}
+    登录到博客
+{% endblock %}
+
+{% block page_content %}
+<div class="page-header">
+    <h1>Login</h1>
+</div>
+<div class="col-md-4">
+    {{ wtf.quick_form(form, action="/auth/login") }}
+    <br>
+    <p>New user? <a href="{{ url_for("auth.register") }}">Click to register.</a></p>
+</div>
+{% endblock %}
