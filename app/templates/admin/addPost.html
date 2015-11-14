@@ -1,0 +1,53 @@
+{% extends "admin/base.html" %}
+
+{% block title %}
+    添加文章
+{% endblock %}
+
+{% block add_active %}
+    active
+{% endblock %}
+
+{% block styles %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/editormd.min.css')}}" />
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <form action="{{ url_for('admin.addPost') }}" method="post">
+            <div id="test-editormd"></div>
+            <input type="submit">
+        </form>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script src="{{ url_for('static', filename='editormd.min.js' )}}"></script>
+    <script>
+        var testEditor;
+
+        $(function() {
+            testEditor = editormd("test-editormd", {
+                height: 400,
+                syncScrolling : "single",
+                delay: 300,
+                searchReplace: true,
+                codeFold: true,
+                emoji: true,
+                path: "{{ url_for('static', filename='lib/') }}",
+
+                toolbarIcons: function(){
+                    return ["undo", "redo", "|",
+                            "bold", "del", "italic", "quote", "|",
+                            "list-ol", "list-ul", "hr", "|",
+                            "link", "reference-link", "image", "|",
+                            "code", "preformatted-text", "code-block", "goto-line", "|",
+                            "table", "datetime", "emoji", "html-entities", "pagebreak", "||",
+                            "preview", "watch", "fullscreen", "clear", "search",]
+                }
+            });
+        });
+    </script>
+{% endblock %}
