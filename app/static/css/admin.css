@@ -1,0 +1,10 @@
+.main-left .slug{
+    font-size: 80%;
+        font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
+}
+
+.main-left .slug input{
+    border: none;
+    width: 80px;
+    background: cornsilk;
+}

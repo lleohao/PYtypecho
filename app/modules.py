@@ -43,6 +43,11 @@ class Comment(db.EmbeddedDocument):
     author = db.StringField(verbose_name="Name", max_length=255, required=True)
 
 
+class Category(db.Document):
+    pass
+    # TODO: 添加无限分类
+
+
 class Post(db.DynamicDocument):
     """
     文章文档集
@@ -52,5 +57,6 @@ class Post(db.DynamicDocument):
     slug = db.StringField(max_length=255, required=True)
     tags = db.ListField(db.StringField())
     content = db.StringField()
+    is_publish = db.BooleanField()
     comment = db.ListField(db.EmbeddedDocumentField("Comment"))
 
