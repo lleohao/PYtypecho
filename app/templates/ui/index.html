@@ -1,0 +1,43 @@
+{% extends "ui/base.html" %}
+{% block title %}
+    Pytecho
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="page-header">
+            <h1>Pytecho</h1>
+        </div>
+        {% for post in posts %}
+         <div class="col-md-8">
+            <div class="page-header">
+                <h2>{{ post.title }}</h2>
+            </div>
+            <article>
+                <div id="{{ post.slug }}" class="md2html">
+                    <textarea style="display:none;">
+                        {{ post.content }}
+                    </textarea>
+                </div>
+            </article>
+             <hr>
+         </div>
+        {% endfor %}
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script>
+        $(function() {
+            var elem = $(".md2html");
+            for(var i = 0, len = elem.length; i < len; i++){
+                editormd.markdownToHTML(elem[i].id, {
+                    htmlDecode      : "style,script,iframe",  // you can filter tags decode
+                    emoji           : true,
+                    taskList        : true,
+                });
+            }
+
+        });
+    </script>
+{% endblock %}

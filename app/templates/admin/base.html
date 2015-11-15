@@ -27,7 +27,7 @@
                     <li class="dropdown {% block operate_active %}{% endblock %}">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">管理</a>
                         <ul class="dropdown-menu">
-                            <li><a href="#">文章</a></li>
+                            <li><a href="{{ url_for('admin.managePost') }}">文章</a></li>
                             <li><a href="#">独立页面</a></li>
                             <li><a href="#">评论</a></li>
                             <li><a href="#">标签和分类</a></li>
@@ -47,7 +47,7 @@
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="#">{{ session['username'] }}</a></li><!-- 用户名 -->
-                    <li><a href="#">网站</a></li>
+                    <li><a href="{{ url_for('ui.index') }}" target="_blank">网站</a></li>
                     {#  TODO: 添加网站主页                  #}
                     <li><a href="{{ url_for('auth.logout') }}">登出</a></li>
                 </ul>

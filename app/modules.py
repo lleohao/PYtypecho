@@ -44,8 +44,9 @@ class Comment(db.EmbeddedDocument):
 
 
 class Category(db.Document):
-    pass
-    # TODO: 添加无限分类
+    name = db.StringField(required=True)
+    short_name = db.StringField()
+    description = db.StringField()
 
 
 class Post(db.DynamicDocument):

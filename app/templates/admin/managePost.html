@@ -1,0 +1,65 @@
+{%- extends "admin/base.html"  %}
+{% block title %}管理文章{% endblock %}
+{% block operate_active %}active{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="page-header">
+            <h4>管理文章</h4>
+        </div>
+        <form name="manage-category" method="post">
+            <div class="form-group">
+                <input type="checkbox" id="check_all">
+                <div class="dropdown" style="display: inline-block">
+                    <button class="btn btn-default dropdown-toggle btn-sm" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                        选中项<span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">删除</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="form-group">
+                <table width="100%" class="table table-hover">
+                    <colgroup>
+                        <col width="20">
+                        <col width="6%">
+                        <col width="45%">
+                        <col width="">
+                        <col width="18%">
+                        <col width="16%">
+                    </colgroup>
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th>标题</th>
+                        <th>作者</th>
+                        <th>分类</th>
+                        <th>日期</th>
+                    </tr>
+                    {% for post in posts %}
+                        <tr>
+                            <td><input type="checkbox" name="{{ post.id }}"></td>
+                            <td>{{ loop.index }}</td>
+                            <td><a href="{{ url_for('admin.showPost', slug=post.slug) }}">{{ post.title }}</a></td>
+                            <td><a href="#">{{ post.author }}</a></td>
+                            <td><a href="#">{{ post.categoty }}</a></td>
+                            <td><a href="#">{{ post.create_at }}</a></td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div class="form-group">
+                <input type="checkbox" id="check_all">
+                <div class="dropdown" style="display: inline-block">
+                    <button class="btn btn-default dropdown-toggle btn-sm" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                        选中项<span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">删除</a></li>
+                    </ul>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}
