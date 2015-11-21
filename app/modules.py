@@ -12,10 +12,19 @@ class User(UserMixin, db.Document):
     """
     用户文档集
     """
-    email = db.EmailField(required=True, unique=True)
-    username = db.StringField(max_length=20, required=True, unique=True)
+    name = db.StringField(max_length=25, required=True, unique=True)
     password_hash = db.StringField(max_length=128, required=True)
-    user_type = db.StringField(choices=Permission, default='normal')
+    email = db.EmailField(required=True, unique=True)
+    url = db.StringField(max_length=30)
+    screenName = db.StringField(max_length=25)
+    group = db.StringField(choices=Permission, default='normal')
+
+    meta = {
+        'indexes': [
+            'name',
+            'email'
+        ]
+    }
 
     @property
     def password(self):
@@ -27,6 +36,7 @@ class User(UserMixin, db.Document):
 
     def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
+
 
 
 @login_manager.user_loader
