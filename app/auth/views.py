@@ -3,19 +3,19 @@ from flask import render_template, redirect, request, url_for, flash
 from flask.ext.login import login_required, login_user, logout_user, session
 from . import auth
 from ..modules import User
-from .forms import loginForm, registerForm
+from .forms import loginForm
 
 
 @auth.route("/login", methods=["GET", "POST"])
 def login():
     form = loginForm()
     if form.validate_on_submit():
-        user = User.objects(username=form.username.data).first()
+        user = User.objects(name=form.username.data).first()
         if user is not None and user.verify_password(form.password.data):
-            session["username"] = user.username
+            session["username"] = user.name
             login_user(user, form.remember_me.data)
             return redirect(request.args.get('next') or url_for("admin.main"))
-        flash("Invalid username or password")
+        flash(u"用户名或密码错误", 'warning')
     return render_template("/auth/login.html", form=form)
 
 
@@ -25,17 +25,5 @@ def logout():
     form = loginForm()
     logout_user()
     session["username"] = None
-    flash("You have been logged out.")
+    flash(u"您已经退出登录", 'success')
     return render_template("/auth/login.html", form=form)
-
-
-@auth.route("/register", methods=["GET", "POST"])
-def register():
-    form = registerForm()
-    if form.validate_on_submit():
-        user = User(email=form.email.data, username=form.username.data)
-        user.password = form.password.data
-        user.save()
-        flash("You can login.")
-        return redirect(url_for("auth.login"))
-    return render_template("/auth/register.html", form=form)

@@ -2,16 +2,39 @@
 {% import "bootstrap/wtf.html" as wtf %}
 
 {% block title %}
-    登录到博客
+    用户登录
 {% endblock %}
 
-{% block page_content %}
-<div class="page-header">
-    <h1>Login</h1>
-</div>
-<div class="col-md-4">
-    {{ wtf.quick_form(form, action="/auth/login") }}
-    <br>
-    <p>New user? <a href="{{ url_for("auth.register") }}">Click to register.</a></p>
+{% block content %}
+<div class="container">
+    {% with messages = get_flashed_messages( with_categories=true )  %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{- category }} alert-dismissible" role="alert">
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %} 
+    {% endwith %}
+    <div class="col-md-4 col-md-offset-4" id="login-form">
+        <form action="{{ url_for('auth.login') }}" method="post" name="login" >
+            {{ form.csrf_token }}
+            <div class="form-group">
+                {{ form.username.label(class='sr-only') }}
+                {{ form.username(class='form-control', placeholder='用户名') }}
+            </div>
+            <div class="form-group">
+                {{ form.password.label(class='sr-only') }}
+                {{ form.password(class='form-control', placeholder='密码') }}
+            </div>
+            <div class="checkbox">
+                <label>
+                    {{ form.remember_me }}{{ form.remember_me.label.text }}
+                </label>
+            </div>
+            {{ form.submit(class='btn-block btn btn-primary') }}
+        </form>
+    </div>
 </div>
 {% endblock %}
