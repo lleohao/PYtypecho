@@ -38,19 +38,9 @@ class User(UserMixin, db.Document):
         return check_password_hash(self.password_hash, password)
 
 
-
 @login_manager.user_loader
 def user_load(user_id):
     return User.objects(id=user_id).first()
-
-
-class Comment(db.EmbeddedDocument):
-    """
-    评论文档集
-    """
-    created_at = db.DateTimeField(default=datetime.datetime.now, required=True)
-    body = db.StringField(verbose_name="Comment", required=True)
-    author = db.StringField(verbose_name="Name", max_length=255, required=True)
 
 
 class Category(db.Document):
@@ -59,15 +49,50 @@ class Category(db.Document):
     description = db.StringField()
 
 
-class Post(db.DynamicDocument):
+class Post(db.Document):
     """
     文章文档集
     """
-    create_at = db.DateTimeField(default=datetime.datetime.now, required=True)
+    created = db.DateTimeField(default=datetime.datetime.now, required=True)
     title = db.StringField(max_length=255, required=True)
     slug = db.StringField(max_length=255, required=True)
+    text = db.StringField()
+    status = db.BooleanField(default=False)
     tags = db.ListField(db.StringField())
-    content = db.StringField()
-    is_publish = db.BooleanField()
-    comment = db.ListField(db.EmbeddedDocumentField("Comment"))
+    author = db.StringField()
+
+    meta = {
+        'indexes': [
+            'slug',
+            'author',
+            'status'
+        ]
+    }
+
+
+class Page(db.Document):
+    created = db.DateTimeField(default=datetime.datetime.now, required=True)
+    title = db.StringField(max_length=255, required=True)
+    slug = db.StringField(max_length=255, required=True)
+    text = db.StringField()
+    status = db.BooleanField(default=False)
+    author = db.StringField()
+
+    meta = {
+        'indexes': [
+            'slug',
+            'author',
+            'status'
+        ]
+    }
+
+
+class Comment(db.Document):
+    """
+    评论
+    """
+    post_id = db.StringField(required=True)
+    authorId= db.StringField(required=True)
+    content = db.StringField(required=True)
+
 

@@ -1,0 +1,78 @@
+{% extends "admin/base.html" %}
+
+{% block title %}添加页面{% endblock %}
+{% block write %}active{% endblock %}
+{% block styles %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/editormd.min.css') }}">
+{% endblock %}
+
+{% block content %}
+    {{ super() }}
+    <div class="container">
+        <div class="page-title">
+            <h2>撰写新页面</h2>
+        </div>
+        <div class="row main">
+            <div class="col-md-12">
+                <form method="post" name="write_page" action="{{ url_for('admin.write_page') }}">
+                    {{ form.csrf_token }}
+                    <div class="form-group">
+                        {{ form.title.label(class='sr-only') }}
+                        {{ form.title(class='form-control', placeholder="请输入标题") }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.slug.label(class='sr-only') }}
+                        <div class="input-group input-group-sm col-lg-5">
+                            <div class="input-group-addon">lleobox.com/</div>
+                            {{ form.slug(class='form-control') }}
+                            <div class="input-group-addon">.html</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div id="edit-area"></div>
+                    </div>
+                    <div class="form-group">
+                        <div class="pull-right">
+                            <button class="btn btn-default" type="submit" name="submit" value="save">保存草稿</button>
+                            <button class="btn btn-primary" type="submit" name="submit" value="publish">发布页面</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script src="{{ url_for('static', filename='js/editormd.min.js' )}}"></script>
+    <script>
+        var testEditor;
+
+        $(function() {
+            testEditor = editormd("edit-area", {
+                height: 600,
+                syncScrolling : "single",
+                delay: 300,
+                searchReplace: true,
+                codeFold: true,
+                emoji: true,
+                toolbarAutoFixed: false,
+                path: "{{ url_for('static', filename='lib/') }}",
+
+                toolbarIcons: function(){
+                    return ["undo", "redo", "|",
+                            "bold", "del", "italic", "quote", "|",
+                            "list-ol", "list-ul", "hr", "|",
+                            "link", "reference-link", "image", "|",
+                            "code", "preformatted-text", "code-block", "goto-line", "|",
+                            "table", "datetime", "emoji", "html-entities", "pagebreak", "||",
+                            "preview", "watch", "fullscreen", "clear", "search",]
+                }
+            });
+        });
+    </script>
+{% endblock %}

@@ -4,14 +4,25 @@
     控制台
 {% endblock %}
 
-{% block main_active %}
+{% block main %}
     active
 {% endblock %}
 
 {% block content %}
     <div class="container">
-        <div class="page-header">
-            <h1>Hello</h1>
+    <div class="page-title">
+        <h2>网站概要</h2>
+    </div>
+    <div class="row main">
+        <div class="col-md-12 welcomebord">
+            <p>目前有 <a href="#">7</a> 篇文章, 并有 <a href="#">1</a> 条关于你的评论在 <a href="#">4</a> 个分类中.</p>
+            <p>点击下面的链接快速开始:</p>
+            <ul>
+                <li><a href="#">撰写新文章</a></li>
+                <li><a href="#">更换外观</a></li>
+                <li><a href="#">系统设置</a></li>
+            </ul>
         </div>
     </div>
+</div>
 {% endblock %}

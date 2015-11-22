@@ -1,10 +1,97 @@
-.main-left .slug{
-    font-size: 80%;
-        font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
+body {
+    background: #eee;
 }
 
-.main-left .slug input{
-    border: none;
-    width: 80px;
-    background: cornsilk;
+#login-form {
+    margin-top: 4%;
+}
+
+#login-form .btn-block{
+    margin-top: 20px;
+}
+
+.page-title h2 {
+    font-size: 3ex;
+    font-weight: bold;
+}
+
+.page-title {
+    margin-bottom: 20px;
+}
+
+.welcomebord {
+    color: #999;
+    font-size: 1.125em;
+}
+
+.welcomebord p a {
+    color: #000;
+    font-size: 1.5em;
+}
+
+.welcomebord ul {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    list-style: none;
+}
+
+.welcomebord ul li {
+    float: left;
+    margin-right: 20px;
+}
+
+.list-operate {
+    margin: 20px 0;
+}
+
+.manage-table {
+    background: #ffffff;
+    padding: 10px 40px 20px;
+    font-size: 1.125em;
+}
+
+.tag-list {
+    background: #ffffff;
+    padding: 20px 40px;
+    font-size: 1.125em;
+}
+
+.tag-list ul, .tag-list ul li {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.tag-list ul li {
+    float: left;
+    display: block;
+    padding: 5px 10px;
+    margin-right: 20px;
+}
+
+.tag-list ul li i {
+    padding-left: 5px;
+    color: #ffffff;
+}
+
+.tag-list ul li:hover {
+    background: #e8e8e8;
+}
+
+.tag-list a:hover {
+    text-decoration: none;
+}
+
+.tag-list ul li:hover i {
+    color: inherit;
+}
+
+.merge {
+    margin-left: 20px;
+    float: left;
+}
+
+.clear-margin {
+    margin: 0;
 }
