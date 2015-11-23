@@ -3,7 +3,8 @@ from flask import render_template, redirect, flash, request, url_for, session
 from flask.ext.login import login_required
 from . import admin
 from .forms import postForm, pageForm
-from ..modules import Post, Page
+from ..modules import Post, Page, Category
+from datetime import datetime
 
 
 @admin.route("/main")
@@ -12,7 +13,7 @@ def main():
     return render_template("admin/main.html")
 
 
-@admin.route("/main/write-post/", methods=["GET", "POST"])
+@admin.route("/write-post", methods=["GET", "POST"])
 @login_required
 def write_post():
     form = postForm()
@@ -38,11 +39,11 @@ def write_post():
                 post.slug = str(post.id)
                 post.save()
             flash(u"发布文章成功", "success")
-            return redirect(url_for("admin.write_post"))
+            return redirect(url_for("admin.manage_posts"))
     return render_template("admin/write-post.html", form=form)
 
 
-@admin.route("/main/write-page/", methods=["GET", "POST"])
+@admin.route("/write-page", methods=["GET", "POST"])
 @login_required
 def write_page():
     form = pageForm()
@@ -69,3 +70,36 @@ def write_page():
             flash(u"发布页面成功", "success")
             return redirect(url_for("admin.write_page"))
     return render_template("admin/write-page.html", form=form)
+
+
+@admin.route("/manage-posts")
+# @login_required
+def manage_posts():
+    posts = Post.objects()
+    createds = []
+    delays = []
+    for post in posts:
+        createds.append(post.created.strftime("%Y-%m-%d"))
+        delay = (datetime.now() - post.created).seconds/60
+        delays.append(delay)
+    categories = Category.objects(parent="")
+    return render_template("admin/manage-posts.html", posts=posts,
+                           delays=delays, createds=createds,
+                           categories=categories)
+
+
+@admin.route("/delete-posts", methods=["GET", "POST"])
+@login_required
+def delete_posts():
+    slugs = request.form.getlist('slug')
+    for slug in slugs:
+        post = Post.objects(slug=slug)
+        post.delete()
+    flash(u"文章删除成功", "success")
+    return redirect(url_for('admin.manage_posts'))
+
+
+@admin.route("/manage-comments")
+@login_required
+def manage_comments():
+    return "pass"

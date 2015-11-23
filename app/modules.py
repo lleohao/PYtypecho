@@ -5,8 +5,6 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask.ext.login import UserMixin
 from . import db, login_manager
 
-Permission = ('admin', 'writer', 'normal')
-
 
 class User(UserMixin, db.Document):
     """
@@ -17,7 +15,7 @@ class User(UserMixin, db.Document):
     email = db.EmailField(required=True, unique=True)
     url = db.StringField(max_length=30)
     screenName = db.StringField(max_length=25)
-    group = db.StringField(choices=Permission, default='normal')
+    group = db.StringField(default='normal')
 
     meta = {
         'indexes': [
@@ -43,40 +41,38 @@ def user_load(user_id):
     return User.objects(id=user_id).first()
 
 
-class Category(db.Document):
-    name = db.StringField(required=True)
-    short_name = db.StringField()
-    description = db.StringField()
-
-
-class Post(db.Document):
-    """
-    文章文档集
-    """
+class Post(db.DynamicDocument):
     created = db.DateTimeField(default=datetime.datetime.now, required=True)
     title = db.StringField(max_length=255, required=True)
     slug = db.StringField(max_length=255, required=True)
     text = db.StringField()
     status = db.BooleanField(default=False)
     tags = db.ListField(db.StringField())
-    author = db.StringField()
+    author = db.StringField(default="")
+    category = db.StringField(default="")
+
 
     meta = {
         'indexes': [
             'slug',
             'author',
-            'status'
+            'status',
+            'category'
+        ],
+        'ordering': [
+            '-created'
         ]
     }
 
 
-class Page(db.Document):
+class Page(db.DynamicDocument):
     created = db.DateTimeField(default=datetime.datetime.now, required=True)
     title = db.StringField(max_length=255, required=True)
     slug = db.StringField(max_length=255, required=True)
-    text = db.StringField()
+    text = db.StringField(default="")
     status = db.BooleanField(default=False)
-    author = db.StringField()
+    author = db.StringField(default="")
+    category = db.StringField(default="")
 
     meta = {
         'indexes': [
@@ -87,12 +83,14 @@ class Page(db.Document):
     }
 
 
-class Comment(db.Document):
-    """
-    评论
-    """
-    post_id = db.StringField(required=True)
-    authorId= db.StringField(required=True)
-    content = db.StringField(required=True)
+class Category(db.Document):
+    name = db.StringField(required=True)
+    parent = db.StringField(required=True, default="")
+
+    meta = {
+        'indexes':[
+            'name'
+        ]
+    }
 
 

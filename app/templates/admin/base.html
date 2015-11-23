@@ -37,7 +37,7 @@
                 <li class="{% block manage %}{% endblock %} dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button">管理</a>
                     <ul class="dropdown-menu">
-                        <li><a href="manage-posts.html">文章</a></li>
+                        <li><a href="{{ url_for('admin.manage_posts') }}">文章</a></li>
                         <li><a href="manage-pages.html">独立页面</a></li>
                         <li><a href="manage-comments.html">评论</a></li>
                         <li><a href="manage-categories.html">分类</a></li>

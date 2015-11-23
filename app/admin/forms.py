@@ -15,10 +15,3 @@ class postForm(Form):
 class pageForm(Form):
     title = StringField(u"标题", validators=[InputRequired()])
     slug = StringField(u"Slug")
-
-
-class addCategoryForm(Form):
-    name = StringField(u"分类名称*", validators=[InputRequired()])
-    short_name = StringField(u"缩略名")
-    description = TextAreaField(u"分类描述")
-    submit = SubmitField(u"增加分类")
