@@ -35,8 +35,17 @@
                         <div id="edit-area"></div>
                     </div>
                     <div class="form-group">
-                        {{ form.tags.label(class='sr-only') }}
-                        {{ form.tags(class='form-control', placeholder="请输入标签") }}
+                            {{ form.tags.label(class='sr-only') }}
+                            {{ form.tags(class='form-control', placeholder="请输入标签, 以英文 , 号分割") }}
+                    </div>
+                    <div class="form-group">
+                        <select name="category" class="form-control">
+                            <option value="">选择分类</option>
+                                {% for category in categories %}
+                                <option value="{{ category.name }}">{{ category.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
                     </div>
                     <div class="form-group">
                         <div class="pull-right">
@@ -49,6 +58,11 @@
         </div>
         </div>
     </div>
+    <footer>
+        <div class="container">
+            <p>Power by flask</p>
+        </div>
+    </footer>
 {% endblock %}
 
 {% block scripts %}
@@ -79,11 +93,6 @@
                             "preview", "watch", "fullscreen", "clear", "search",]
                 }
             });
-        });
-        $(function() {
-            $("#tags").tagbox({
-                url: ["api"]
-            })
         });
     </script>
 {% endblock %}

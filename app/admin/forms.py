@@ -10,6 +10,7 @@ class postForm(Form):
     title = StringField(u"标题", validators=[InputRequired()])
     slug = StringField(u"Slug")
     tags = StringField(u"标签")
+    category = StringField(u"分类")
 
 
 class pageForm(Form):
