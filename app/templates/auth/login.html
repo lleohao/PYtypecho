@@ -22,11 +22,11 @@
             {{ form.csrf_token }}
             <div class="form-group">
                 {{ form.username.label(class='sr-only') }}
-                {{ form.username(class='form-control', placeholder='用户名') }}
+                {{ form.username(class='form-control', placeholder='用户名', required=required) }}
             </div>
             <div class="form-group">
                 {{ form.password.label(class='sr-only') }}
-                {{ form.password(class='form-control', placeholder='密码') }}
+                {{ form.password(class='form-control', placeholder='密码', required=required) }}
             </div>
             <div class="checkbox">
                 <label>

@@ -1,0 +1,121 @@
+{% extends "admin/base.html" %}
+{% block title %}管理分类{% endblock %}
+{% block manage %}active{% endblock %}
+
+{% block content %}
+    {{ super() }}
+    <div class="container">
+        <div class="page-title">
+            <h2>管理分类&nbsp;&nbsp;<a href="{{ url_for('admin.category') }}" class="btn btn-primary btn-sm"
+                                   role="link">新增</a></h2>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="list-operate clearfix">
+                    <form action="get" class="form-inline">
+                        <div class="operate pull-left">
+                            <label>
+                                <i class="sr-only">全选</i>
+                                <input type="checkbox" class="select-all">
+                            </label>
+
+                            <div class="btn-group btn-group-sm" role="group">
+                                <button class="btn btn-default dropdown-toggle" data-toggle="dropdown">选中项&nbsp;<span
+                                        class="caret"></span></button>
+                                <ul class="dropdown-menu">
+                                    <li><a href="#" class="delete">删除</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="search pull-right">
+                            <div class="form-group">
+                                <input type="text" class="form-control" name="keyword" placeholder="请输入关键字">
+                                <button class="btn btn-default" type="submit">筛选</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <!--主体表格-->
+                <form method="post" name="manage-categories" action="{{ url_for('admin.delete_categories') }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+
+                    <div class="manage-table">
+                        <table class="table table-hover">
+                            <colgroup>
+                                <col width="20">
+                                <col width="30%">
+                                <col width="20%">
+                                <col width="35%">
+                                <col>
+                                <col width="10%">
+                            </colgroup>
+                            <thead>
+                            <tr>
+                                <th></th>
+                                <th>名称</th>
+                                <th>子分类</th>
+                                <th>缩略名</th>
+                                <th>文章数</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for category in categories %}
+                                <tr>
+                                    <td><input type="checkbox" name="cid" value="{{ category.id }}"></td>
+                                    <td>
+                                        <a href="{{ url_for('admin.category', cid=category.id) }}">{{ category.name }}</a>
+                                        <a href="index.html/{{ category.name }}" title="浏览 {{ category.name }}"
+                                           target="_blank"><i class="glyphicon glyphicon-new-window"></i></a>
+                                    </td>
+                                    <td><a href="categories.html?parent={{ category.id }}">新增</a></td>
+                                    <td>{{ category.slug }}</td>
+                                    <td><a href="#" class="badge">1</a></td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </form>
+                <!--页码、操作栏-->
+                <div class="clearfix list-operate">
+                    <div class="operate pull-left">
+                        <label>
+                            <i class="sr-only">全选</i>
+                            <input type="checkbox" class="select-all">
+                        </label>
+
+                        <div class="btn-group btn-group-sm" role="group">
+                            <button class="btn btn-default dropdown-toggle" data-toggle="dropdown">选中项&nbsp;<span
+                                    class="caret"></span></button>
+                            <ul class="dropdown-menu">
+                                <ul class="dropdown-menu">
+                                    <li><a href="#" class="delete">删除</a></li>
+                                </ul>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="page-num pull-right">
+                        <ul class="pagination clear-margin">
+                            <li><a href="#"><span aria-hidden="true">&laquo;</span></a></li>
+                            <li><a href="#">1</a></li>
+                            <li><a href="#">2</a></li>
+                            <li><a href="#"><span aria-hidden="true">&raquo;</span></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block scripts %}
+    {{ super() }}
+    <script>
+        $(".select-all").click(function () {
+            var isChecked = $(this).prop("checked");
+            $("input[name='cid']").prop("checked", isChecked);
+        });
+        $(".delete").click(function () {
+            $("form")[1].submit();
+        })
+    </script>
+{% endblock %}

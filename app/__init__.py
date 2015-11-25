@@ -1,7 +1,7 @@
 # coding: utf-8
 from flask import Flask
 from flask.ext.bootstrap import Bootstrap
-from flask.ext.mongoengine import MongoEngine
+from flask.ext.mongoengine import MongoEngine, MongoEngineSessionInterface
 from flask.ext.login import LoginManager
 from flask_wtf import CsrfProtect
 from config import config
@@ -22,6 +22,7 @@ def create_app(config_name):
     csrf.init_app(app)
     login_manager.init_app(app)
     db.init_app(app)
+    app.session_interface = MongoEngineSessionInterface(db)
 
     # 导入用户验证模块
     from .auth import auth as auth_blueprint

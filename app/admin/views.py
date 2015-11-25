@@ -2,8 +2,8 @@
 from flask import render_template, redirect, flash, request, url_for, session
 from flask.ext.login import login_required
 from . import admin
-from .forms import postForm, pageForm
-from ..modules import Post, Page, Category
+from .forms import postForm, pageForm, categoryForm, userForm
+from ..modules import Post, Page, Category, User
 from datetime import datetime
 
 
@@ -122,6 +122,85 @@ def delete_pages():
         page.delete()
     flash(u"页面删除成功", "success")
     return redirect(url_for('admin.manage_pages'))
+
+
+# 分类相关
+@admin.route("/manage-categories")
+@login_required
+def manage_categories():
+    categories = Category.objects()
+    return render_template("admin/manage-categories.html", categories=categories)
+
+
+@admin.route("/category", methods=["GET", "POST"])
+@login_required
+def category():
+    cid = request.args.get("cid")
+
+    if cid is not None:
+        categories = Category.objects(id=cid)
+        oldCategory = categories[0]
+        form = categoryForm(name=oldCategory.name, slug=oldCategory.slug, description=oldCategory.description)
+        return render_template("admin/categories.html", form=form)
+
+    categories = Category.objects()
+    choices = []
+    for category in categories():
+        choices.append((category.id, category.name))
+    form = categoryForm()
+    form.setChoices(choices)
+    if form.validate_on_submit():
+        slug = form.slug.data or form.name.data
+        categories = Category(name=form.name.data, slug=slug, parent=request.form.get("parent" or ""))
+        categories.save()
+        flash(u"分类保存成功", "success")
+        return redirect(url_for("admin.manage_categories"))
+    return render_template("admin/categories.html", form=form)
+
+
+@admin.route("/delete-categories", methods=["POST"])
+@login_required
+def delete_categories():
+    cids = request.form.getlist('cid')
+    for cid in cids:
+        category = Category.objects(id=cid)
+        category.delete()
+    flash(u"分类删除成功", "success")
+    return redirect(url_for('admin.manage_categories'))
+
+
+# 用户相关
+@admin.route("/users", methods=["GET", "POST"])
+@login_required
+def users():
+    form = userForm()
+    if form.validate_on_submit():
+        user = User(name=form.username.data, email=form.email.data, url=form.url.data,
+                    screenName=form.screenName.data, group=form.group.data)
+        user.password = form.password.data
+        user.save()
+        flash(u"用户添加成功", "success")
+        return redirect(url_for("admin.manage_users"))
+    return render_template("admin/users.html", form=form)
+
+
+@admin.route("/manage-users", methods=["GET", "POST"])
+@login_required
+def manage_users():
+    users = User.objects()
+    return render_template("admin/manage-users.html", users=users)
+
+
+@admin.route("/delete-users", methods=["GET", "POST"])
+@login_required
+def delete_users():
+    uids = request.form.getlist('uid')
+    for uid in uids:
+        user = User(id=uid)
+        user.delete()
+    flash(u"用户删除成功", "success")
+    return redirect(url_for('admin.manage_users'))
+
 
 
 @admin.route("/manage-comments")

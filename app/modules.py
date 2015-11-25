@@ -1,6 +1,5 @@
 # coding: utf-8
-import datetime
-from flask import url_for
+from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask.ext.login import UserMixin
 from . import db, login_manager
@@ -12,9 +11,9 @@ class User(UserMixin, db.Document):
     """
     name = db.StringField(max_length=25, required=True, unique=True)
     password_hash = db.StringField(max_length=128, required=True)
-    email = db.EmailField(required=True, unique=True)
-    url = db.StringField(max_length=30)
-    screenName = db.StringField(max_length=25)
+    email = db.EmailField(required=True, unique=True, default="")
+    url = db.StringField(max_length=30, default="")
+    screenName = db.StringField(max_length=25, default="")
     group = db.StringField(default='normal')
 
     meta = {
@@ -42,7 +41,7 @@ def user_load(user_id):
 
 
 class Post(db.DynamicDocument):
-    created = db.DateTimeField(default=datetime.datetime.now, required=True)
+    created = db.DateTimeField(default=datetime.now, required=True)
     title = db.StringField(max_length=255, required=True)
     slug = db.StringField(max_length=255, required=True)
     text = db.StringField()
@@ -50,7 +49,6 @@ class Post(db.DynamicDocument):
     tags = db.ListField(db.StringField())
     author = db.StringField(default="")
     category = db.StringField(default="")
-
 
     meta = {
         'indexes': [
@@ -66,7 +64,7 @@ class Post(db.DynamicDocument):
 
 
 class Page(db.DynamicDocument):
-    created = db.DateTimeField(default=datetime.datetime.now, required=True)
+    created = db.DateTimeField(default=datetime.now, required=True)
     title = db.StringField(max_length=255, required=True)
     slug = db.StringField(max_length=255, required=True)
     text = db.StringField(default="")
@@ -83,14 +81,19 @@ class Page(db.DynamicDocument):
     }
 
 
-class Category(db.Document):
+class ChildrenCategory(db.EmbeddedDocument):
     name = db.StringField(required=True)
+
+
+class Category(db.Document):
     parent = db.StringField(required=True, default="")
+    name = db.StringField(required=True, unique=True)
+    slug = db.StringField()
+    description = db.StringField()
+    children = db.ListField(db.EmbeddedDocumentField(ChildrenCategory))
 
     meta = {
-        'indexes':[
+        'indexes': [
             'name'
         ]
     }
-
-

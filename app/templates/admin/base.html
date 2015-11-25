@@ -40,10 +40,10 @@
                         <li><a href="{{ url_for('admin.manage_posts') }}">文章</a></li>
                         <li><a href="{{ url_for('admin.manage_pages') }}">独立页面</a></li>
                         <li><a href="manage-comments.html">评论</a></li>
-                        <li><a href="manage-categories.html">分类</a></li>
+                        <li><a href="{{ url_for('admin.manage_categories') }}">分类</a></li>
                         <li><a href="manage-tags.html">标签</a></li>
                         <li><a href="manage-files.html">文件</a></li>
-                        <li><a href="manage-users.html">用户</a></li>
+                        <li><a href="{{ url_for('admin.manage_users') }}">用户</a></li>
                     </ul>
                 </li>
                 <li class="{% block option %}{% endblock %} dropdown">
