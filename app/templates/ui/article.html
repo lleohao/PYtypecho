@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/editormd.preview.min.css">
+    <title>文章详细页</title>
+</head>
+<body>
+<!-- 内容区 -->
+<div id="container" class="container">
+    <!-- 页面首部 -->
+    <header role="banner" class="site-header">
+        <hgroup>
+            <h1 class="site-title">Lleohao's Blog</h1>
+            <h2 class="site-description">Lleohao's 的个人博客</h2>
+        </hgroup>
+        <!-- 导航栏 -->
+        <nav role="navigation" class="nav">
+            <ul class="nav-menu">
+                <li class="menu-item"><a href="#">首页</a></li>
+                <li class="menu-item"><a href="#">存档</a></li>
+                <li class="menu-item"><a href="#">留言</a></li>
+                <li class="menu-item"><a href="#">联系</a></li>
+                <li class="menu-item"><a href="#">关于</a></li>
+            </ul>
+        </nav>
+        <!-- 导航栏结束 -->
+    </header>
+    <!-- 页面首部结束
+     ------------------------------------->
+
+    <!-- 页面主体内容 -->
+    <div id="main" class="clear-fix site-main">
+        <!-- 文章区 -->
+        <div id="content" class="page-content">
+            <article class="post post-detailed">
+                <header class="post-header">
+                    <h1 class="post-title">
+                        <a href="#">CSS3实现</a>
+                    </h1>
+                    <div class="comment-link">
+                        <a href="#">1条回复</a>
+                    </div>
+                </header>
+                <div class="post-content md2html" id="css3">
+                    <textarea>
+1. 创建 `XMLHttpRequest` 对象，需要注意的是不同浏览器创建的方式不同
+推荐下面的函数创建
+```javascript
+function creatXmlHttp() {
+	var xmlHttp = null;
+	try {//Firefox, Opera 8.0+, Safari
+		xmlHttp = new XMLHttpRequest();
+	} catch(e) {//IE
+		try {
+			xmlHttp = new ActiveXObject(&#34;Msxml2.XMLHTTP&#34;);
+		} catch(e) {
+			xmlHttp = new ActiveXObject(&#34;Microsoft.XMLHTTP&#34;);
+		}
+	}
+	return xmlHttp;
+}
+```
+
+2.  向服务器发送请求，有`POST`和`GET`方式
+	* `xmlHttp.open(method, url, async)`
+	 * **method**表示提交的方式
+	 * **url**表示处理文件的位置
+	 * **async**有两个值，`true`表示*异步*，`false`表示*同步*
+
+	* `xmlHttp.send(string)` 只有**POST**提交方式才有`string`参数
+
+3. `onreadystatechange`事件
+```javascript
+xmlhttp.onreadystatechange = function() {
+	if (xmlhttp.readyState==4 &amp;&amp; xmlhttp.status==200){
+		document.getElementById(&#34;myDiv&#34;).innerHTML=xmlhttp.responseText;
+		}
+}
+```
+
+	readyState 属性存有 XMLHttpRequest 的状态信息，从0~4变化
+	*  0：请求未初始化
+	* 1： 服务器连接已建立
+	* 2： 请求已接收
+	* 3： 请求处理中
+	* 4：请求已完成，且响应已就绪
+
+	status 是HTTP状态码
+	* 200：&#34;OK&#34;
+	* 404：未找到页面
+
+	**当 readyState 等于 4 且状态为 200 时，表示响应已就绪**
+
+4. 返回响应值
+	 XMLHttpRequest 对象的 responseText 或 responseXML 属性
+
+5. 实例
+```html
+	&lt;form action=&#34;chk.asp&#34;&gt;
+		&lt;p&gt;&lt;label for=&#34;username&#34;&gt;用户名：&lt;/label&gt;&lt;input type=&#34;text&#34; name=&#34;username&#34; id=&#34;username&#34;&gt;&lt;/p&gt;
+		&lt;p&gt;&lt;label for=&#34;passwo&#34;&gt;密&amp;nbsp;&amp;nbsp;码：&lt;/label&gt;&lt;input type=&#34;password&#34; name=&#34;password&#34; id=&#34;password&#34;&gt;&lt;/p&gt;
+		&lt;button id=&#34;btn&#34; type=&#34;button&#34;&gt;提交&lt;/button&gt;
+	&lt;/form&gt;
+```
+
+	```javascript
+
+		var xmlHttp = creatXmlHttp();
+		//设置属性值
+		var method = &#34;POST&#34;;
+		var url = &#34;chk.asp&#34;;
+		//拼接需要传递的字符串
+		var postData = &#34;postData=&#34;+name.value+&#34;,&#34;+pwd.value;
+
+		xmlHttp.open(method, url, true);
+		xmlHttp.setRequestHeader(&#34;Content-Type&#34;, &#34;application/x-www-form-urlencoded&#34;);
+		xmlHttp.onreadystatechange = function(){
+			if (xmlHttp.readyState==4 &amp;&amp; xmlHttp.status==200){
+				document.getElementById(&#34;tip&#34;).innerHTML=xmlHttp.responseText;
+			}
+		}
+		xmlHttp.send(postData,postData);
+	```
+	```asp
+	处理代码（这里使用的是ASP）
+	&lt;%
+		dim name,pwd,postdata
+		postdata = trim(request(&#34;postdata&#34;))
+		postdata = split(postdata, &#34;,&#34;)
+		name = postdata(0)
+		pwd = postdata(1)
+	%&gt;
+
+	&lt;%
+		response.write(name+&#34; &#34;+pwd)
+	%&gt;
+	```
+
+6. 体会
+	感觉ajax就是将本来需要输出到浏览器的内容返回给了js函数，通过实现约定的状态码可以方便的进行一些操作。
+	注意在使用中一次只能传递一条数据，所以需要在客户端进行数据的预处理，像是拼接字符串什么的。
+
+                    </textarea>
+                </div>
+                <footer class="post-meta">
+                    <span class="pushtime">本条目发布于<time datetime="2015-11-26 22:00:00">2015年11月26日。</time></span>
+                    <span class="category">属于 <a href="#" class="categories">个人随想</a> 分类，</span>
+                    <span class="tag">标签：<a href="#" class="tags">笔记</a>，<a href="#" class="tags">日记</a> 。</span>
+                </footer>
+            </article>
+        </div>
+        <!-- 文章区结束
+        ---------------------------------->
+
+        <!-- 侧边栏区 -->
+        <div id="aside" class="aside-area" role="complementary">
+            <aside id="search" class="widget widget-search">
+                <form action="#" role="search" method="get" id="searchform">
+                    <div>
+                        <label for="keyword" class="sr-only">搜索：</label>
+                        <input type="text" name="keyword" id="keyword" placeholder="输入关键字">
+                        <input type="submit" id="searchsubmit" value="搜索">
+                    </div>
+                </form>
+            </aside>
+            <aside id="category" class="widget widget-category">
+                <h3 class="widget-title">分类目录</h3>
+                <ul>
+                    <li class="cat-item"><a href="#">JavaScript</a></li>
+                    <li class="cat-item"><a href="#">Python</a></li>
+                    <li class="cat-item"><a href="#">ACM</a></li>
+                </ul>
+            </aside>
+            <aside id="operate" class="widget widget-operate">
+                <h3 class="widget-title">用户操作</h3>
+                <ul>
+                    <li class="opt-item"><a href="#">登录</a></li>
+                    <li class="opt-item"><a href="#">订阅</a></li>
+                    <li class="opt-item"><a href="#">分享</a></li>
+                </ul>
+            </aside>
+        </div>
+        <!-- 侧边栏区结束
+        ---------------------------------->
+    </div>
+    <!-- 页面主体内容结束
+    -------------------------------------->
+
+    <!-- 页面底部 -->
+    <footer role="contentinfo">
+        <div class="site-info">
+            <a href="#">Lleohao's blog</a>
+            &copy;2015
+            <br>
+            Power by Python, MongoDb
+        </div>
+    </footer>
+    <!-- 页面底部结束
+     -------------------------------------->
+</div>
+<!-- 内容区结束
+----------------------------------------------->
+
+<script src="js/jquery.min.js"></script>
+<script src="js/editormd.min.js"></script>
+<script src="lib/marked.min.js"></script>
+<script src="lib/prettify.min.js"></script>
+<script src="lib/raphael.min.js"></script>
+<script src="lib/underscore.min.js"></script>
+<script src="lib/sequence-diagram.min.js"></script>
+<script src="lib/flowchart.min.js"></script>
+<script src="lib/jquery.flowchart.min.js"></script>
+<script>
+    $(function() {
+        editormd.markdownToHTML("css3", {
+            htmlDecode : "style,script,iframe",
+            emoji : true,
+            taskList : true
+        });
+    })
+</script>
+<script>
+    $(function() {
+        console.log("加油");
+    })
+</script>
+</body>
+</html>
