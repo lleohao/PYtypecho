@@ -5,6 +5,12 @@ from flask.ext.login import UserMixin
 from . import db, login_manager
 
 
+class Site(db.Document):
+    site_title = db.StringField()
+    site_description = db.StringField()
+    site_url = db.StringField()
+
+
 class User(UserMixin, db.Document):
     """
     用户文档集
