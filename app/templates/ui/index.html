@@ -1,43 +1,193 @@
-{% extends "ui/base.html" %}
-{% block title %}
-    Pytecho
-{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/style.css">
+    <title>Lleohao's Blog</title>
+</head>
+<body>
+<!-- 内容区 -->
+    <div id="container" class="container">
+        <!-- 页面首部 -->
+        <header role="banner" class="site-header">
+            <hgroup>
+                <h1 class="site-title">Lleohao's Blog</h1>
+                <h2 class="site-description">Lleohao's 的个人博客</h2>
+            </hgroup>
+            <!-- 导航栏 -->
+            <nav role="navigation" class="nav">
+                <ul class="nav-menu">
+                    <li class="menu-item"><a href="#">首页</a></li>
+                    <li class="menu-item"><a href="#">存档</a></li>
+                    <li class="menu-item"><a href="#">留言</a></li>
+                    <li class="menu-item"><a href="#">联系</a></li>
+                    <li class="menu-item"><a href="#">关于</a></li>
+                </ul>
+            </nav>
+            <!-- 导航栏结束 -->
+        </header>
+        <!-- 页面首部结束
+         ------------------------------------->
 
-{% block content %}
-    <div class="container">
-        <div class="page-header">
-            <h1>Pytecho</h1>
-        </div>
-        {% for post in posts %}
-         <div class="col-md-8">
-            <div class="page-header">
-                <h2>{{ post.title }}</h2>
+        <!-- 页面主体内容 -->
+        <div id="main" class="clear-fix site-main">
+            <!-- 文章区 -->
+            <div id="content" class="page-content">
+                <article class="post">
+                    <header class="post-header">
+                        <h1 class="post-title">
+                            <a href="#">念念不忘，必有回响</a>
+                        </h1>
+                        <div class="comment-link">
+                            <a href="#">1条回复</a>
+                        </div>
+                    </header>
+                    <div class="post-summary">
+                        <p>如果想做一件事，哪怕很难，只要心中念念不忘，总会不断地接近那个目标的。[...]</p>
+                    </div>
+                    <footer class="post-meta">
+                        <span class="pushtime">本条目发布于<time datetime="2015-11-26 22:00:00">2015年11月26日。</time></span>
+                        <span class="category">属于 <a href="#" class="categories">个人随想</a> 分类，</span>
+                        <span class="tag">标签：<a href="#" class="tags">笔记</a>，<a href="#" class="tags">日记</a> 。</span>
+                    </footer>
+                </article>
+                <article class="post">
+                    <header class="post-header">
+                        <h1 class="post-title">
+                            <a href="#">念念不忘，必有回响</a>
+                        </h1>
+                        <div class="comment-link">
+                            <a href="#">1条回复</a>
+                        </div>
+                    </header>
+                    <div class="post-summary">
+                        <p>如果想做一件事，哪怕很难，只要心中念念不忘，总会不断地接近那个目标的。[...]</p>
+                    </div>
+                    <footer class="post-meta">
+                        <span class="pushtime">本条目发布于<time datetime="2015-11-26 22:00:00">2015年11月26日。</time></span>
+                        <span class="category">属于 <a href="#" class="categories">个人随想</a> 分类，</span>
+                        <span class="tag">标签：<a href="#" class="tags">笔记</a>，<a href="#" class="tags">日记</a> 。</span>
+                    </footer>
+                </article>
+                <article class="post">
+                    <header class="post-header">
+                        <h1 class="post-title">
+                            <a href="#">念念不忘，必有回响</a>
+                        </h1>
+                        <div class="comment-link">
+                            <a href="#">1条回复</a>
+                        </div>
+                    </header>
+                    <div class="post-summary">
+                        <p>如果想做一件事，哪怕很难，只要心中念念不忘，总会不断地接近那个目标的。[...]</p>
+                    </div>
+                    <footer class="post-meta">
+                        <span class="pushtime">本条目发布于<time datetime="2015-11-26 22:00:00">2015年11月26日。</time></span>
+                        <span class="category">属于 <a href="#" class="categories">个人随想</a> 分类，</span>
+                        <span class="tag">标签：<a href="#" class="tags">笔记</a>，<a href="#" class="tags">日记</a> 。</span>
+                    </footer>
+                </article>
+                <article class="post">
+                    <header class="post-header">
+                        <h1 class="post-title">
+                            <a href="#">念念不忘，必有回响</a>
+                        </h1>
+                        <div class="comment-link">
+                            <a href="#">1条回复</a>
+                        </div>
+                    </header>
+                    <div class="post-summary">
+                        <p>如果想做一件事，哪怕很难，只要心中念念不忘，总会不断地接近那个目标的。[...]</p>
+                    </div>
+                    <footer class="post-meta">
+                        <span class="pushtime">本条目发布于<time datetime="2015-11-26 22:00:00">2015年11月26日。</time></span>
+                        <span class="category">属于 <a href="#" class="categories">个人随想</a> 分类，</span>
+                        <span class="tag">标签：<a href="#" class="tags">笔记</a>，<a href="#" class="tags">日记</a> 。</span>
+                    </footer>
+                </article>
+                <article class="post">
+                    <header class="post-header">
+                        <h1 class="post-title">
+                            <a href="#">念念不忘，必有回响</a>
+                        </h1>
+                        <div class="comment-link">
+                            <a href="#">1条回复</a>
+                        </div>
+                    </header>
+                    <div class="post-summary">
+                        <p>如果想做一件事，哪怕很难，只要心中念念不忘，总会不断地接近那个目标的。[...]</p>
+                    </div>
+                    <footer class="post-meta">
+                        <span class="pushtime">本条目发布于<time datetime="2015-11-26 22:00:00">2015年11月26日。</time></span>
+                        <span class="category">属于 <a href="#" class="categories">个人随想</a> 分类，</span>
+                        <span class="tag">标签：<a href="#" class="tags">笔记</a>，<a href="#" class="tags">日记</a> 。</span>
+                    </footer>
+                </article>
+                <nav id="page-nav" class="navigation" role="navigation">
+                    <h3 class="sr-only">加载更多</h3>
+                    <div class="show-many">
+                        <a href="#">加载更多---></a>
+                    </div>
+                </nav>
             </div>
-            <article>
-                <div id="{{ post.slug }}" class="md2html">
-                    <textarea style="display:none;">
-                        {{ post.text }}
-                    </textarea>
-                </div>
-            </article>
-             <hr>
-         </div>
-        {% endfor %}
-{% endblock %}
+            <!-- 文章区结束
+            ---------------------------------->
 
-{% block scripts %}
-    {{ super() }}
-    <script>
-        $(function() {
-            var elem = $(".md2html");
-            for(var i = 0, len = elem.length; i < len; i++){
-                editormd.markdownToHTML(elem[i].id, {
-                    htmlDecode      : "style,script,iframe",  // you can filter tags decode
-                    emoji           : true,
-                    taskList        : true,
-                });
-            }
+            <!-- 侧边栏区 -->
+            <div id="aside" class="aside-area" role="complementary">
+                <aside id="search" class="widget widget-search">
+                    <form action="#" role="search" method="get" id="searchform">
+                        <div>
+                            <label for="keyword" class="sr-only">搜索：</label>
+                            <input type="text" name="keyword" id="keyword" placeholder="输入关键字">
+                            <input type="submit" id="searchsubmit" value="搜索">
+                        </div>
+                    </form>
+                </aside>
+                <aside id="category" class="widget widget-category">
+                    <h3 class="widget-title">分类目录</h3>
+                    <ul>
+                        <li class="cat-item"><a href="#">JavaScript</a></li>
+                        <li class="cat-item"><a href="#">Python</a></li>
+                        <li class="cat-item"><a href="#">ACM</a></li>
+                    </ul>
+                </aside>
+                <aside id="operate" class="widget widget-operate">
+                    <h3 class="widget-title">用户操作</h3>
+                    <ul>
+                        <li class="opt-item"><a href="#">登录</a></li>
+                        <li class="opt-item"><a href="#">订阅</a></li>
+                        <li class="opt-item"><a href="#">分享</a></li>
+                    </ul>
+                </aside>
+            </div>
+            <!-- 侧边栏区结束
+            ---------------------------------->
+        </div>
+        <!-- 页面主体内容结束
+        -------------------------------------->
 
-        });
-    </script>
-{% endblock %}
+        <!-- 页面底部 -->
+        <footer role="contentinfo">
+            <div class="site-info">
+                <a href="#">Lleohao's blog</a>
+                &copy;2015
+                <br>
+                Power by Python, MongoDb
+            </div>
+        </footer>
+        <!-- 页面底部结束
+         -------------------------------------->
+    </div>
+<!-- 内容区结束
+----------------------------------------------->
+
+<script src="js/jquery.min.js"></script>
+<script>
+    $(function() {
+        console.log("加油");
+    })
+</script>
+</body>
+</html>
