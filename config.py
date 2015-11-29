@@ -1,7 +1,8 @@
 import os
 
+
 class Config:
-    SECRET_KEY = "devkey"
+    SECRET_KEY = "abacd74f966611e5a00240f02fd6707c"
     BOOTSTRAP_SERVE_LOCAL = True
 
     @staticmethod

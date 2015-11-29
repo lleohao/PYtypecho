@@ -13,14 +13,16 @@ class Site(db.Document):
 
 class User(UserMixin, db.Document):
     """
-    用户文档集
+    admin test count
+    User(name="admin", password="admin", email="admin@admin.com", url="admin.admin",screenName="admin", group="administrator").save()
     """
     name = db.StringField(max_length=25, required=True, unique=True)
+    password = db.StringField()
     password_hash = db.StringField(max_length=128, required=True)
     email = db.EmailField(required=True, unique=True, default="")
     url = db.StringField(max_length=30, default="")
     screenName = db.StringField(max_length=25, default="")
-    group = db.StringField(default='normal')
+    group = db.StringField(default='subscriber', choices=["administrator", "editor", "subscriber"])
 
     meta = {
         'indexes': [
@@ -29,13 +31,9 @@ class User(UserMixin, db.Document):
         ]
     }
 
-    @property
-    def password(self):
-        raise AttributeError('password is not a readable attribute')
-
-    @password.setter
-    def password(self, password):
-        self.password_hash = generate_password_hash(password)
+    def clean(self):
+        self.password_hash = generate_password_hash(self.password)
+        self.password = None
 
     def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
