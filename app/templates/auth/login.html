@@ -1,9 +1,17 @@
-{% extends "auth/base.html" %}
+{% extends "admin-base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
+{% import "widget.html" as widget %}
 
-{% block title %}
-    用户登录
+{% block styles %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
 {% endblock %}
+
+{% block navbar %}
+    {{ widget.admin_nav() }}
+{% endblock %}
+
+{% block title %}用户登录{% endblock %}
 
 {% block content %}
 <div class="container">

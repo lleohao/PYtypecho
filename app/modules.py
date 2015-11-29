@@ -14,9 +14,9 @@ class Site(db.Document):
 class User(UserMixin, db.Document):
     """
     admin test count
-    User(name="admin", password="admin", email="admin@admin.com", url="admin.admin",screenName="admin", group="administrator").save()
+    User(username="admin", password="admin", email="admin@admin.com", url="admin.admin",screenName="admin", group="administrator").save()
     """
-    name = db.StringField(max_length=25, required=True, unique=True)
+    username = db.StringField(max_length=25, required=True, unique=True)
     password = db.StringField()
     password_hash = db.StringField(max_length=128, required=True)
     email = db.EmailField(required=True, unique=True, default="")
@@ -26,7 +26,7 @@ class User(UserMixin, db.Document):
 
     meta = {
         'indexes': [
-            'name',
+            'username',
             'email'
         ]
     }
