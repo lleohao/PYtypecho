@@ -2,13 +2,8 @@
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask.ext.login import UserMixin
+from mongoengine import *
 from . import db, login_manager
-
-
-class Site(db.Document):
-    site_title = db.StringField()
-    site_description = db.StringField()
-    site_url = db.StringField()
 
 
 class User(UserMixin, db.Document):
@@ -44,22 +39,51 @@ def user_load(user_id):
     return User.objects(id=user_id).first()
 
 
-class Post(db.DynamicDocument):
+class Comment(db.EmbeddedDocument):
+    """
+    comment1 = Comment(author_name="lleohao", content="good post")
+    """
+    author_name = db.StringField(required=True)
+    author_email = db.StringField()
+    author_url = db.StringField()
     created = db.DateTimeField(default=datetime.now, required=True)
-    title = db.StringField(max_length=255, required=True)
-    slug = db.StringField(max_length=255, required=True)
-    text = db.StringField()
-    status = db.BooleanField(default=False)
-    tags = db.ListField(db.StringField())
-    author = db.StringField(default="")
-    category = db.StringField(default="")
+    content = db.StringField(required=True)
+
+
+class Category(db.Document):
+    name = db.StringField(required=True, unique=True)
+    slug = db.StringField()
+    description = db.StringField()
 
     meta = {
         'indexes': [
-            'slug',
+            'name'
+        ]
+    }
+
+
+class Content(db.DynamicDocument):
+    """
+    post = Content(title="test post", slug="test", status=True, type="post")
+    """
+    created = db.DateTimeField(default=datetime.now, required=True)
+    title = db.StringField(max_length=255, required=True)
+    slug = db.StringField(max_length=255, required=True)
+    category = db.ReferenceField(Category)
+    tags = db.ListField(db.StringField())
+    text = db.StringField()
+    author = db.StringField(default="")
+    status = db.BooleanField(default=False)
+    type = db.StringField(choices=["post", "page"])
+
+    comments = db.ListField(db.EmbeddedDocumentField(Comment))
+
+    meta = {
+        'indexes': [
             'author',
             'status',
-            'category'
+            'category',
+            'type'
         ],
         'ordering': [
             '-created'
@@ -67,37 +91,10 @@ class Post(db.DynamicDocument):
     }
 
 
-class Page(db.DynamicDocument):
-    created = db.DateTimeField(default=datetime.now, required=True)
-    title = db.StringField(max_length=255, required=True)
-    slug = db.StringField(max_length=255, required=True)
-    text = db.StringField(default="")
-    status = db.BooleanField(default=False)
-    author = db.StringField(default="")
-    category = db.StringField(default="")
+class Options(db.Document):
+    site_url = db.StringField()
+    site_name = db.StringField()
+    site_keyword = db.StringField()
 
-    meta = {
-        'indexes': [
-            'slug',
-            'author',
-            'status'
-        ]
-    }
-
-
-class ChildrenCategory(db.EmbeddedDocument):
-    name = db.StringField(required=True)
-
-
-class Category(db.Document):
-    parent = db.StringField(required=True, default="")
-    name = db.StringField(required=True, unique=True)
-    slug = db.StringField()
-    description = db.StringField()
-    children = db.ListField(db.EmbeddedDocumentField(ChildrenCategory))
-
-    meta = {
-        'indexes': [
-            'name'
-        ]
-    }
+    comment_index = db.IntField(default=0)
+    new_comment = db.ListField(db.ReferenceField(Content))
