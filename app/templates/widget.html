@@ -44,7 +44,7 @@
                 <li class="dropdown {{ is_options }}">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button">设置</a>
                     <ul class="dropdown-menu">
-                        <li><a href="options-general.html">基本</a></li>
+                        <li><a href="{{ url_for('admin.options_general') }}">基本</a></li>
                         <li><a href="option-discussion.hrml">评论</a></li>
                         <li><a href="option-reading.html">阅读</a></li>
                         <li><a href="option-permalink.html">永久链接</a></li>
@@ -58,7 +58,16 @@
             </ul>
         </div>
         {% endif %}
-
     </div>
 </nav>
-{% endmacro %}
+{%- endmacro -%}
+
+{% macro page_title(title="", url=None) -%}
+<div class="page-title">
+    <h2>{{ title }}&nbsp;&nbsp;
+        {%- if url -%}
+        <a href="{{ url_for(url) }}" class="btn btn-primary btn-sm" role="link">新增</a>
+        {%- endif -%}
+    </h2>
+</div>
+{%- endmacro %}

@@ -1,0 +1,19 @@
+{% extends "admin-base.html" %}
+
+{% block title %}
+基本设置
+{% endblock %}
+
+{% block navbar %}
+    {{ widget.admin_nav(is_options="active") }}
+{% endblock %}
+
+{% block page_title %}
+    {{ widget.page_title(title="基本设置") }}
+{% endblock %}
+
+{% block main %}
+<div class="col-md-8 col-lg-offset-2">
+    {{ wtf.quick_form(form, button_map={"submit":"primary"}) }}
+</div>
+{% endblock %}

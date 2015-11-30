@@ -1,0 +1,22 @@
+{%- extends "admin-base.html" %}
+
+{% block title %}控制台{% endblock %}
+
+{% block navbar %}
+    {{ widget.admin_nav(is_main="active") }}
+{% endblock %}
+
+{%- block page_title %}
+{{ widget.page_title(title="网站概要") }}
+{% endblock -%}
+
+{% block main %}
+<div class="col-md-12 welcomebord">
+    <p>目前有 <a href="#">{{ page_num }}</a> 篇文章, 其中有 <a href="#">{{ op.comment_index }}</a> 篇文章有新的评论。</P>
+    <p>点击下面的链接快速开始:</p>
+    <ul>
+        <li><a href="{{ url_for('admin.write_post') }}">撰写新文章</a></li>
+        <li><a href="{{ url_for('admin.options_general') }}">系统设置</a></li>
+    </ul>
+</div>
+{% endblock %}

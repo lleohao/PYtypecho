@@ -2,7 +2,7 @@
 import random, string
 from datetime import date
 from flask.ext.wtf import Form
-from flask.ext.wtf.html5 import EmailField
+from flask.ext.wtf.html5 import EmailField, URLField
 from wtforms import StringField, SubmitField, PasswordField, BooleanField, TextAreaField, SelectField
 from wtforms.validators import InputRequired, Length, Email, Regexp, EqualTo
 
@@ -47,3 +47,13 @@ class userForm(Form):
     password2 = PasswordField(u"用户密码确认*")
     url = StringField(u"用户主页")
     group = SelectField(u"用户组", choices=choices, default=["subscriber"])
+
+
+class OptionGeneralForm(Form):
+    title = StringField(u"网站标题", description=u"站点的名称将显示在网页的标题处.")
+    url = URLField(u"网站地址", description=u"站点地址主要用于生成内容的永久链接.")
+    description = StringField(u"网站描述", description=u"站点描述将显示在网页代码的头部.")
+    keyword = StringField(u"关键字", description=u"请以半角逗号\",\"分割多个关键字.")
+    submit = SubmitField(u"保存设置")
+
+

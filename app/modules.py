@@ -92,9 +92,13 @@ class Content(db.DynamicDocument):
 
 
 class Options(db.Document):
+    """
+    Options(site_url="lleohao.com", site_title="Lleohao's Blog", site_keyword="blog,python")
+    """
     site_url = db.StringField()
-    site_name = db.StringField()
+    site_title = db.StringField()
     site_keyword = db.StringField()
+    site_description = db.StringField()
 
-    comment_index = db.IntField(default=0)
+    comment_index = db.IntField(default=0, required=True)
     new_comment = db.ListField(db.ReferenceField(Content))

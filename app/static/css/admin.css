@@ -95,3 +95,15 @@ body {
 .clear-margin {
     margin: 0;
 }
+
+.main {
+    min-height: 480px;
+}
+
+footer {
+    border-top: 5px #fffffc double;
+}
+
+.site-info {
+    color: #000;
+}
