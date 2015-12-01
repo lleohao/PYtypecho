@@ -75,7 +75,6 @@ class Content(db.DynamicDocument):
     category = db.ReferenceField(Category)
     tags = db.ListField(db.StringField())
     text = db.StringField()
-    author = db.StringField(default="")
     status = db.BooleanField(default=False)
     type = db.StringField(choices=["post", "page"])
 
@@ -83,7 +82,6 @@ class Content(db.DynamicDocument):
 
     meta = {
         'indexes': [
-            'author',
             'status',
             'category',
             'type'

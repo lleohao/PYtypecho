@@ -29,9 +29,8 @@ def write_post():
         slug = form.slug.data
         text = request.form["edit-area-markdown-doc"]
         tags = form.tags.data.split(",")
-        author = session["username"]
         category = Category.objects(slug=form.category.data).first()
-        post = Content(title=title, slug=slug, text=text, tags=tags, author=author, category=category, type="post")
+        post = Content(title=title, slug=slug, text=text, tags=tags, category=category, type="post")
         if request.form["submit"] == "save":
             post.status = False
             post.save()
@@ -87,8 +86,7 @@ def write_page():
         title = form.title.data
         slug = form.slug.data
         text = request.form["edit-area-markdown-doc"]
-        author = session["username"]
-        page = Content(title=title, slug=slug, text=text, author=author, type="page")
+        page = Content(title=title, slug=slug, text=text, type="page")
         if request.form["submit"] == "save":
             page.status = False
             page.save()
