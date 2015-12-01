@@ -43,19 +43,13 @@
         {% endblock %}
         </div>
     {% endblock container %}
-    <footer role="contentinfo">
-        <div class="site-info">
-            <a href="/">Lleohao's blog</a>
-            &copy;2015
-            Power by Python, MongoDb
-        </div>
-    </footer>
     </div>
     {%- endblock content %}
 
     {% block scripts %}
     <script src="{{bootstrap_find_resource('jquery.js', cdn='jquery')}}"></script>
     <script src="{{bootstrap_find_resource('js/bootstrap.js', cdn='bootstrap')}}"></script>
+    <script src="{{ url_for('static', filename='js/js.js') }}"></script>
     {%- endblock scripts %}
     {%- endblock body %}
   </body>

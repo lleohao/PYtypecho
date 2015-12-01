@@ -1,0 +1,96 @@
+{% extends "admin-base.html" %}
+
+{% block styles %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/editormd.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/tags.css') }}">
+{% endblock %}
+
+{% block title %}添加文章{% endblock %}
+
+{% block navbar %}
+    {{ widget.admin_nav(is_write="active") }}
+{% endblock %}
+
+{% block page_title %}
+   {{ widget.page_title(title="撰写新文章") }}
+{% endblock %}
+
+{% block main %}
+<div class="row main">
+    <iframe src="#" frameborder="0" style="display: none" name="none"></iframe>
+    <form method="post" name="write_post" target="none" action="{{ url_for('admin.write_post') }}">
+    <div class="col-md-9">
+        {{ form.csrf_token }}
+        <div class="form-group">
+            {{ form.title.label(class='sr-only') }}
+            {{ form.title(class='form-control', placeholder="请输入标题") }}
+        </div>
+        <div class="form-group">
+            {{ form.slug.label(class='sr-only') }}
+            <div class="input-group input-group-sm col-lg-5">
+                <div class="input-group-addon">lleobox.com/{category}/</div>
+                {{ form.slug(class='form-control', placeholder="这将用于生成个性化的url") }}
+                <div class="input-group-addon">.html</div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div id="edit-area">
+                <textarea style="display: none">{{ content }}</textarea>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            {{ form.category.label }}
+            {{ form.category(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form.tags.label }}
+            {{ form.tags(class='form-control', placeholder="请输入标签, 以英文 , 号分割") }}
+        </div>
+        <div class="form-group">
+            <div class="pull-right">
+                <button class="btn btn-default" type="submit" name="submit" value="save">保存草稿</button>
+                <button class="btn btn-primary" type="submit" name="submit" value="publish">发布文章</button>
+            </div>
+        </div>
+    </div>
+</form>
+</div>
+{% endblock %}
+
+
+{% block scripts %}
+    {{ super() }}
+    <script src="{{ url_for('static', filename='js/editormd.min.js' )}}"></script>
+    <script>
+        var testEditor;
+
+        $(function() {
+            testEditor = editormd("edit-area", {
+                height: 600,
+                syncScrolling : "single",
+                delay: 300,
+                searchReplace: true,
+                codeFold: true,
+                emoji: true,
+                toolbarAutoFixed: false,
+                path: "{{ url_for('static', filename='lib/') }}",
+                tocm : true,
+                tocContainer : "",
+                tocDropdown  : false,
+                toolbarIcons: function(){
+                    return ["undo", "redo", "|",
+                            "bold", "del", "italic", "quote", "|",
+                            "list-ol", "list-ul", "hr", "|",
+                            "link", "reference-link", "image", "|",
+                            "code", "preformatted-text", "code-block", "goto-line", "|",
+                            "table", "datetime", "emoji", "html-entities", "pagebreak", "||",
+                            "preview", "watch", "fullscreen", "clear", "search"]
+                }
+            });
+        });
+    </script>
+{% endblock %}

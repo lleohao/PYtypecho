@@ -51,6 +51,9 @@ class Comment(db.EmbeddedDocument):
 
 
 class Category(db.Document):
+    """
+    Category(name="默认分类", slug="normal", description="这是系统默认的分类")
+    """
     name = db.StringField(required=True, unique=True)
     slug = db.StringField()
     description = db.StringField()

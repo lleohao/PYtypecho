@@ -4,8 +4,9 @@ from datetime import datetime
 from flask import render_template, redirect, flash, request, url_for, session
 from flask.ext.login import login_required
 from . import admin
-from .forms import postForm, pageForm, categoryForm, userForm, OptionGeneralForm
+from .forms import ContentForm, pageForm, categoryForm, userForm, OptionGeneralForm
 from ..modules import Content, Category, User, Options
+
 
 @admin.route("/")
 @admin.route("/main")
@@ -20,15 +21,16 @@ def main():
 @admin.route("/write-post", methods=["GET", "POST"])
 @login_required
 def write_post():
-    form = postForm()
+    form = ContentForm()
     categories = Category.objects()
+    form.category.choices = [(cat.slug, cat.name) for cat in categories]
     if form.validate_on_submit():
         title = form.title.data
         slug = form.slug.data
         text = request.form["edit-area-markdown-doc"]
         tags = form.tags.data.split(",")
         author = session["username"]
-        category = request.form['category']
+        category = Category.objects(slug=form.category.data).first()
         post = Content(title=title, slug=slug, text=text, tags=tags, author=author, category=category, type="post")
         if request.form["submit"] == "save":
             post.status = False
@@ -37,7 +39,7 @@ def write_post():
                 post.slug = str(post.id)
                 post.save()
             flash(u"保存草稿成功", "success")
-            return redirect(url_for("admin.write_post"))
+            return render_template("write-post.html", form=form, content=text)
         else:
             post.status = True
             post.save()
@@ -46,7 +48,7 @@ def write_post():
                 post.save()
             flash(u"发布文章成功", "success")
             return redirect(url_for("admin.manage_posts"))
-    return render_template("admin/write-post.html", form=form, categories=categories)
+    return render_template("write-post.html", form=form, categories=categories)
 
 
 @admin.route("/manage-posts")

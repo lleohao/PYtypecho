@@ -3,15 +3,17 @@ import random, string
 from datetime import date
 from flask.ext.wtf import Form
 from flask.ext.wtf.html5 import EmailField, URLField
-from wtforms import StringField, SubmitField, PasswordField, BooleanField, TextAreaField, SelectField
+from wtforms import StringField, SubmitField, PasswordField, BooleanField, TextAreaField, SelectMultipleField, \
+    SelectField, HiddenField
 from wtforms.validators import InputRequired, Length, Email, Regexp, EqualTo
 
 
-class postForm(Form):
+class ContentForm(Form):
+    content_id = HiddenField()
     title = StringField(u"标题", validators=[InputRequired()])
     slug = StringField(u"Slug")
     tags = StringField(u"标签")
-    category = StringField(u"分类")
+    category = SelectField(u"选择分类", choices=[], default="normal")
 
 
 class pageForm(Form):
@@ -55,5 +57,3 @@ class OptionGeneralForm(Form):
     description = StringField(u"网站描述", description=u"站点描述将显示在网页代码的头部.")
     keyword = StringField(u"关键字", description=u"请以半角逗号\",\"分割多个关键字.")
     submit = SubmitField(u"保存设置")
-
-

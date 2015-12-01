@@ -97,13 +97,5 @@ body {
 }
 
 .main {
-    min-height: 480px;
-}
-
-footer {
-    border-top: 5px #fffffc double;
-}
-
-.site-info {
-    color: #000;
+    margin-bottom: 20px;
 }
