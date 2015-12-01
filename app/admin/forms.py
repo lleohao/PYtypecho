@@ -13,7 +13,7 @@ class ContentForm(Form):
     title = StringField(u"标题", validators=[InputRequired()])
     slug = StringField(u"Slug")
     tags = StringField(u"标签")
-    category = SelectField(u"选择分类", choices=[], default="normal")
+    category = SelectField(u"选择分类", choices=[("normal",u"默认分类")], default="normal")
 
 
 class pageForm(Form):

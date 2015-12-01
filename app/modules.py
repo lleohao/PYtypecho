@@ -71,7 +71,7 @@ class Content(db.DynamicDocument):
     """
     created = db.DateTimeField(default=datetime.now, required=True)
     title = db.StringField(max_length=255, required=True)
-    slug = db.StringField(max_length=255, required=True)
+    slug = db.StringField(max_length=255, required=True, unique=True)
     category = db.ReferenceField(Category)
     tags = db.ListField(db.StringField())
     text = db.StringField()
@@ -103,3 +103,5 @@ class Options(db.Document):
 
     comment_index = db.IntField(default=0, required=True)
     new_comment = db.ListField(db.ReferenceField(Content))
+
+    content_index = db.IntField(default=0)

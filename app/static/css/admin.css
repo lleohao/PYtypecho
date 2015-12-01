@@ -99,3 +99,16 @@ body {
 .main {
     margin-bottom: 20px;
 }
+
+.errBox{
+	position: fixed;
+	top: 0;
+	width: 100%;
+	height: 35px;
+	background: #FF8484;
+	color: #fff;
+	text-align: center;
+	line-height: 35px;
+	font-size: 17px;
+	font-family: "黑体";
+}

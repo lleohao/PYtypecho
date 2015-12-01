@@ -7,21 +7,21 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/tags.css') }}">
 {% endblock %}
 
-{% block title %}添加文章{% endblock %}
+{% block title %}添加页面{% endblock %}
 
 {% block navbar %}
     {{ widget.admin_nav(is_write="active") }}
 {% endblock %}
 
 {% block page_title %}
-   {{ widget.page_title(title="撰写新文章") }}
+   {{ widget.page_title(title="撰写新页面") }}
 {% endblock %}
 
 {% block main %}
-<form method="post" name="write_post" action="{{ url_for('admin.write_post') }}">
+<form method="post" name="write_post" action="{{ url_for('admin.write_page') }}">
     {{ form.csrf_token }}
     {{ form.content_id }}
-    <div class="col-md-9">
+    <div class="col-md-12">
         <div class="form-group">
             {{ form.title.label(class='sr-only') }}
             {{ form.title(class='form-control', placeholder="请输入标题", required=required) }}
@@ -38,16 +38,6 @@
             <div id="edit-area">
                 <textarea style="display: none">{{ content }}</textarea>
             </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="form-group">
-            {{ form.category.label }}
-            {{ form.category(class="form-control") }}
-        </div>
-        <div class="form-group">
-            {{ form.tags.label }}
-            {{ form.tags(class='form-control', placeholder="请输入标签, 以英文 , 号分割") }}
         </div>
         <div class="form-group">
             <div class="pull-right">

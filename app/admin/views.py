@@ -18,32 +18,49 @@ def main():
 
 
 # 文章相关内容
-@admin.route("/write-post", methods=["GET", "POST"])
+@admin.route("/write-post/", methods=["GET", "POST"])
 @login_required
 def write_post():
     form = ContentForm()
     categories = Category.objects()
     form.category.choices = [(cat.slug, cat.name) for cat in categories]
+
     if form.validate_on_submit():
+        content_id = form.content_id.data
         title = form.title.data
         slug = form.slug.data
         text = request.form["edit-area-markdown-doc"]
         tags = form.tags.data.split(",")
         category = Category.objects(slug=form.category.data).first()
-        post = Content(title=title, slug=slug, text=text, tags=tags, category=category, type="post")
+
+        if content_id:
+            post = Content.objects(id=content_id).first()
+            post.title = title
+            post.slug = slug
+            post.text = text
+            post.tags = tags
+            post.category = category
+        else:
+            post = Content(title=title, slug=slug, text=text, tags=tags, category=category, type="post")
+
         if request.form["submit"] == "save":
             post.status = False
             post.save()
+            form.content_id.data = post.id
             if slug == "":
                 post.slug = str(post.id)
+                form.slug.data = str(post.id)
                 post.save()
             flash(u"保存草稿成功", "success")
+            # FIXME: 这样会存在刷新多次提交的问题，后期需要改进
             return render_template("write-post.html", form=form, content=text)
         else:
             post.status = True
             post.save()
+            form.content_id.data = post.id
             if slug == "":
                 post.slug = str(post.id)
+                form.slug.data = str(post.id)
                 post.save()
             flash(u"发布文章成功", "success")
             return redirect(url_for("admin.manage_posts"))
@@ -81,29 +98,36 @@ def delete_posts():
 @admin.route("/write-page", methods=["GET", "POST"])
 @login_required
 def write_page():
-    form = pageForm()
+    form = ContentForm()
+
     if form.validate_on_submit():
+        content_id = form.content_id.data
         title = form.title.data
         slug = form.slug.data
         text = request.form["edit-area-markdown-doc"]
-        page = Content(title=title, slug=slug, text=text, type="page")
+
+        if content_id:
+            page = Content.objects(id=content_id).first()
+            page.title = title
+            page.slug = slug
+            page.text = text
+        else:
+            page = Content(title=title, slug=slug, text=text, type="page")
+
         if request.form["submit"] == "save":
             page.status = False
             page.save()
-            if slug == "":
-                page.slug = str(page.id)
-                page.save()
+            form.content_id.data = page.id
             flash(u"保存草稿成功", "success")
-            return redirect(url_for("admin.write_page"))
+            # FIXME: 这样会存在刷新多次提交的问题，后期需要改进
+            return render_template("write-page.html", form=form, content=text)
         else:
             page.status = True
             page.save()
-            if slug == "":
-                page.slug = str(page.id)
-                page.save()
+            form.content_id.data = page.id
             flash(u"发布页面成功", "success")
             return redirect(url_for("admin.manage_pages"))
-    return render_template("admin/write-page.html", form=form)
+    return render_template("write-page.html", form=form)
 
 
 @admin.route('/manage-pages')
