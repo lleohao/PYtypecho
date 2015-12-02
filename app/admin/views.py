@@ -1,10 +1,10 @@
 # coding: utf-8
 from datetime import datetime
 
-from flask import render_template, redirect, flash, request, url_for, session
+from flask import render_template, redirect, flash, request, url_for
 from flask.ext.login import login_required
 from . import admin
-from .forms import ContentForm, pageForm, categoryForm, userForm, OptionGeneralForm
+from .forms import ContentForm, categoryForm, userForm, OptionGeneralForm
 from ..modules import Content, Category, User, Options
 
 
@@ -167,8 +167,8 @@ def category():
 
     if cid is not None:
         categories = Category.objects(id=cid)
-        oldCategory = categories[0]
-        form = categoryForm(name=oldCategory.name, slug=oldCategory.slug, description=oldCategory.description)
+        old_category = categories[0]
+        form = categoryForm(name=old_category.name, slug=old_category.slug, description=old_category.description)
         return render_template("admin/categories.html", form=form)
 
     categories = Category.objects()
@@ -203,9 +203,7 @@ def delete_categories():
 def users():
     form = userForm()
     if form.validate_on_submit():
-        user = User(name=form.username.data, email=form.email.data, url=form.url.data,
-                    screenName=form.screenName.data, group=form.group.data)
-        user.password = form.password.data
+        user = User(username=form.username.data, password=form.password.data, email=form.email.data, url=form.url.data, screenName=form.screenName.data, group=form.group.data)
         user.save()
         flash(u"用户添加成功", "success")
         return redirect(url_for("admin.manage_users"))
@@ -254,20 +252,6 @@ def options_general():
         flash(u"网站信息保存成功", "success")
         return redirect(url_for("admin.options_general"))
     return render_template("options-general.html", form=form)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
