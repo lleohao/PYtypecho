@@ -140,7 +140,7 @@ def manage_pages():
     return render_template("admin/manage-pages.html", pages=pages, createds=createds)
 
 
-@admin.route('/delete-pages', methods=["GET", "POST"])
+@admin.route('/delete-pages', methods=["POST"])
 @login_required
 def delete_pages():
     slugs = request.form.getlist('slug')
@@ -155,8 +155,13 @@ def delete_pages():
 @admin.route("/manage-categories")
 @login_required
 def manage_categories():
-    categories = Category.objects()
-    return render_template("admin/manage-categories.html", categories=categories)
+    keyword = request.args.get("keyword")
+    if keyword:
+        categories = Category.objects.search_text(keyword)
+    else:
+        categories = Category.objects()
+    count = [Content.objects(category=category).count() for category in categories]
+    return render_template("manage-categories.html", categories=categories, count=count)
 
 
 @admin.route("/category", methods=["GET", "POST"])
@@ -169,7 +174,7 @@ def category():
         categories = Category.objects(id=cid)
         old_category = categories[0]
         form = categoryForm(name=old_category.name, slug=old_category.slug, description=old_category.description)
-        return render_template("admin/categories.html", form=form)
+        return render_template("admin/templates/categories.html", form=form)
 
     categories = Category.objects()
     choices = []
@@ -183,7 +188,7 @@ def category():
         categories.save()
         flash(u"分类保存成功", "success")
         return redirect(url_for("admin.manage_categories"))
-    return render_template("admin/categories.html", form=form)
+    return render_template("admin/templates/categories.html", form=form)
 
 
 @admin.route("/delete-categories", methods=["POST"])

@@ -53,6 +53,7 @@ class Comment(db.EmbeddedDocument):
 class Category(db.Document):
     """
     Category(name="默认分类", slug="normal", description="这是系统默认的分类")
+    Category(name="Python", slug="python", description="").save()
     """
     name = db.StringField(required=True, unique=True)
     slug = db.StringField()
@@ -60,7 +61,9 @@ class Category(db.Document):
 
     meta = {
         'indexes': [
-            'name'
+            'name',
+            '$name',
+            '#name'
         ]
     }
 
