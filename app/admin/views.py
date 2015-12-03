@@ -118,9 +118,18 @@ def delete_posts():
 
 # 页面相关内容
 @admin.route("/write-page", methods=["GET", "POST"])
+@admin.route("/write-page/<cid>/")
 @login_required
-def write_page():
+def write_page(cid=None):
     form = ContentForm()
+    if cid:
+        content = Content.objects(id=cid).first()
+        form.title.data = content.title
+        form.slug.data = content.slug
+        text = content.text
+        form.content_id.data = cid
+    else:
+        pass
 
     if form.validate_on_submit():
         content_id = form.content_id.data
@@ -149,7 +158,7 @@ def write_page():
             form.content_id.data = page.id
             flash(u"发布页面成功", "success")
             return redirect(url_for("admin.manage_pages"))
-    return render_template("write-page.html", form=form)
+    return render_template("write-page.html", form=form, content=text)
 
 
 @admin.route('/manage-pages')
@@ -157,9 +166,11 @@ def write_page():
 def manage_pages():
     pages = Content.objects(type="page")
     createds = []
+    comment_num = []
     for page in pages:
         createds.append(page.created.strftime("%Y-%m-%d"))
-    return render_template("admin/templates/manage-pages.html", pages=pages, createds=createds)
+        comment_num.append(len(page.comments))
+    return render_template("manage-pages.html", pages=pages, createds=createds, comment_num=comment_num)
 
 
 @admin.route('/delete-pages', methods=["POST"])

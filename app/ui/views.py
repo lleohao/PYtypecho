@@ -21,12 +21,12 @@ def show_aticle(slug):
     return "ok"
 
 
-@ui.route("/<category>/")
-def show_category(category):
+@ui.route("/<slug>/")
+def show_slug(slug):
     # site = Site.objects().first()
     # posts= Post.objects(category=category)
     # categories = Category.objects()
     # return render_template("ui/index.html",
     #                        site=site, posts=posts, categories=categories)
-    return category
+    return slug
 
