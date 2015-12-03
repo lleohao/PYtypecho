@@ -22,16 +22,10 @@ class pageForm(Form):
 
 
 class categoryForm(Form):
-    choices = [('', u'不选择')]
-
     name = StringField(u"分类名称*", validators=[InputRequired()])
-    slug = StringField(u"分类缩略名")
-    parent = SelectField(u'父级分类', choices=choices, default='')
-    description = TextAreaField(u"分类描述")
-
-    def setChoices(self, choices, default=''):
-        self.parent.choices = choices
-        self.parent.default = default
+    slug = StringField(u"分类缩略名*", description=u"分类缩略名用于创建友好的链接形式, 建议使用字母, 数字, 下划线和横杠", validators=[InputRequired()])
+    description = TextAreaField(u"分类描述", description=u"此文字用于描述分类, 在有的主题中它会被显示.")
+    submit = SubmitField(u"保存分类")
 
 
 class userForm(Form):

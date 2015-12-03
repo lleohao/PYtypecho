@@ -152,16 +152,18 @@ def delete_pages():
 
 
 # 分类相关
-@admin.route("/manage-categories")
+@admin.route("/manage-categories/")
+@admin.route("/manage-categories/page/<int:page>")
 @login_required
-def manage_categories():
+def manage_categories(page=1):
     keyword = request.args.get("keyword")
     if keyword:
         categories = Category.objects.search_text(keyword)
     else:
-        categories = Category.objects()
+        categories = Category.objects[(page-1)*5: page*5]
+        pageinate = Category.objects.paginate(page=page, per_page=5)
     count = [Content.objects(category=category).count() for category in categories]
-    return render_template("manage-categories.html", categories=categories, count=count)
+    return render_template("manage-categories.html", categories=categories, count=count, pageinate=pageinate)
 
 
 @admin.route("/category", methods=["GET", "POST"])
@@ -174,21 +176,15 @@ def category():
         categories = Category.objects(id=cid)
         old_category = categories[0]
         form = categoryForm(name=old_category.name, slug=old_category.slug, description=old_category.description)
-        return render_template("admin/templates/categories.html", form=form)
+        return render_template("categories.html", form=form)
 
-    categories = Category.objects()
-    choices = []
-    for category in categories():
-        choices.append((category.id, category.name))
     form = categoryForm()
-    form.setChoices(choices)
     if form.validate_on_submit():
-        slug = form.slug.data or form.name.data
-        categories = Category(name=form.name.data, slug=slug, parent=request.form.get("parent" or ""))
+        categories = Category(name=form.name.data, slug=form.slug.data, description=form.description.data)
         categories.save()
         flash(u"分类保存成功", "success")
         return redirect(url_for("admin.manage_categories"))
-    return render_template("admin/templates/categories.html", form=form)
+    return render_template("categories.html", form=form)
 
 
 @admin.route("/delete-categories", methods=["POST"])

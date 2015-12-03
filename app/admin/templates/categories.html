@@ -1,41 +1,16 @@
-{% extends "admin/base.html" %}
-{% import "bootstrap/wtf.html" as wtf %}
+{% extends "admin-base.html" %}
 {% block title %}新增分类{% endblock %}
-{% block manage %}active{% endblock %}
 
-{% block content %}
-    {{ super() }}
-    <div class="container">
-        <div class="page-title">
-            <h2>新增分类</h2>
-        </div>
-        <div class="row main" role="form">
-            <div class="col-md-6 col-md-offset-3">
-                <form method="post" enctype="application/x-www-form-urlencoded">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+{% block navbar %}
+    {{ widget.admin_nav(is_manage="active") }}
+{% endblock %}
 
-                    <div class="form-group required">
-                        {{ form.name.label }}{{ form.name(class='form-control') }}
-                    </div>
-                    <div class="form-group required">
-                        {{ form.slug.label }}{{ form.slug(class='form-control') }}
-                        <span class="text-muted small">分类缩略名用于创建友好的链接形式, 建议使用字母, 数字, 下划线和横杠</span>
-                    </div>
-                    <div class="form-group">
-                        {{ form.parent.label }}
-                        {{ form.parent(class='form-control') }}
-                        <p class="text-muted small">此分类将归档在您选择的父级分类下.</p>
-                    </div>
-                    <div class="form-group">
-                        {{ form.description.label }}
-                        {{ form.description(cols="30", rows="4", class="form-control") }}
-                        <span class="text-muted small">此文字用于描述分类, 在有的主题中它会被显示.</span>
-                    </div>
-                    <div class="form-group">
-                        <button class="btn btn-primary" type="submit">新增分类</button>
-                    </div>
-                </form>
-            </div>
-        </div>
+{% block page_title %}
+    {{ widget.page_title(title="网站概要") }}
+{% endblock %}
+
+{% block main %}
+    <div class="col-md-6 col-md-offset-3">
+        {{ wtf.quick_form(form, button_map={"submit" :"primary"}) }}
     </div>
 {% endblock %}

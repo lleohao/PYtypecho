@@ -4,6 +4,7 @@ import os
 class Config(object):
     SECRET_KEY = "abacd74f966611e5a00240f02fd6707c"
     BOOTSTRAP_SERVE_LOCAL = True
+    PER_PAGE = 5
 
     @staticmethod
     def init_app(app):

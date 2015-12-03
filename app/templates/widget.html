@@ -71,3 +71,30 @@
     </h2>
 </div>
 {%- endmacro %}
+
+{% macro render_pagination(pagination, endpoint) %}
+    
+    <ul class="pagination clear-margin">
+        {% if pagination.prev_num == 0 %}
+            <li class="disabled"><a href="{{ url_for(endpoint, page=pagination.prev_num) }}"><span aria-hidden="true">&laquo;</span></a></li>
+        {% else %}
+            <li><a href="{{ url_for(endpoint, page=pagination.prev_num) }}"><span aria-hidden="true">&laquo;</span></a></li>
+        {% endif %}
+
+        {%- for page in pagination.iter_pages() %}
+            {% if page %}
+                {% if page != pagination.page %}
+                    <li><a href="{{ url_for(endpoint, page=page) }}">{{ page }}</a></li>
+                {% else %}
+                    <li class="active"><a href="{{ url_for(endpoint, page=page) }}">{{ page }}</a></li>
+                {% endif %}
+            {% endif %}
+        {%- endfor %}
+
+        {% if pagination.next_num == pagination.pages %}
+            <li><a href="{{ url_for(endpoint, page=pagination.next_num) }}"><span aria-hidden="true">&raquo;</span></a></li>
+        {% else %}
+           <li class="disabled"><a href="{{ url_for(endpoint, page=pagination.next_num) }}"><span aria-hidden="true">&raquo;</span></a></li>
+        {% endif %}
+    </ul>
+{% endmacro %}

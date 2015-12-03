@@ -13,7 +13,7 @@
 {% block main %}
 <div class="col-md-12">
     <div class="list-operate clearfix">
-        <form method="get" class="form-inline">
+        <form method="get" class="form-inline" action="{{ url_for('admin.manage_categories') }}">
             <div class="operate pull-left">
                 <label>
                     <i class="sr-only">全选</i>
@@ -73,7 +73,7 @@
             </table>
         </div>
     </form>
-    <div class="clearfix list-operate">
+    <div class="list-operate clearfix">
         <div class="operate pull-left">
             <label>
                 <i class="sr-only">全选</i>
@@ -91,12 +91,7 @@
             </div>
         </div>
         <div class="page-num pull-right">
-            <ul class="pagination clear-margin">
-                <li><a href="#"><span aria-hidden="true">&laquo;</span></a></li>
-                <li><a href="#">1</a></li>
-                <li><a href="#">2</a></li>
-                <li><a href="#"><span aria-hidden="true">&raquo;</span></a></li>
-            </ul>
+            {{ widget.render_pagination(pageinate, "admin.manage_categories") }}
         </div>
     </div>
 </div>
