@@ -25,6 +25,17 @@ def write_post(cid=None):
     form = ContentForm()
     categories = Category.objects()
     form.category.choices = [(cat.slug, cat.name) for cat in categories]
+    if cid:
+        content = Content.objects(id=cid).first()
+        form.title.data = content.title
+        form.slug.data = content.slug
+        text = content.text
+        category = content.category.name
+        form.tags.data = str(content.tags).join(",")
+        form.content_id.data = cid
+    else:
+        pass
+
 
     if form.validate_on_submit():
         content_id = form.content_id.data
@@ -65,7 +76,7 @@ def write_post(cid=None):
                 post.save()
             flash(u"发布文章成功", "success")
             return redirect(url_for("admin.manage_posts"))
-    return render_template("write-post.html", form=form, categories=categories)
+    return render_template("write-post.html", form=form, categories=categories, content=text)
 
 
 @admin.route("/manage-posts")

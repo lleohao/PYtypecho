@@ -67,7 +67,11 @@
                             <a href="#"><span class="badge">{{ comment_count[loop.index0] }}</span></a>
                         </td>
                         <td>
-                            <a href="{{ url_for('admin.write_post', cid=post.id) }}">{{ post.title }}&nbsp;</a>
+                            <a href="{{ url_for('admin.write_post', cid=post.id) }}">
+                                {% if post.status == False %}
+                                    [草稿]
+                                {% endif %}
+                                {{ post.title }}&nbsp;</a>
                             <a href="{{ url_for('ui.show_aticle', slug=post.slug) }}" target="_blank" title="浏览 {{ post.title }}"><i class="glyphicon glyphicon-new-window"></i></a>
                         </td>
                         <td>{{ post.category.name }}</td>
