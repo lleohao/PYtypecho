@@ -1,6 +1,6 @@
 # coding: utf-8
+import math
 from datetime import datetime
-
 from flask import render_template, redirect, flash, request, url_for
 from flask.ext.login import login_required
 from . import admin
@@ -19,8 +19,9 @@ def main():
 
 # 文章相关内容
 @admin.route("/write-post/", methods=["GET", "POST"])
+@admin.route("/write-post/<cid>")
 @login_required
-def write_post():
+def write_post(cid=None):
     form = ContentForm()
     categories = Category.objects()
     form.category.choices = [(cat.slug, cat.name) for cat in categories]
@@ -68,27 +69,37 @@ def write_post():
 
 
 @admin.route("/manage-posts")
+@admin.route("/manage-categories/page/<int:page>")
 @login_required
-def manage_posts():
-    posts = Content.objects(type="post")
-    categories = Category.objects(parent="")
+def manage_posts(page=1):
+    cat = request.args.get("category")
+    if cat:
+        cat = Category.objects(name=cat).first()
+        posts = Content.objects(type="post", category=cat)[(page-1)*5: page*5]
+    else:
+        posts = Content.objects(type="post")[(page-1)*5: page*5]
+
+    pageinate = Content.objects.paginate(page=page, per_page=5)
+    categories = Category.objects()
     createds = []
     delays = []
+    comment_count = []
     for post in posts:
         createds.append(post.created.strftime("%Y-%m-%d"))
-        delay = (datetime.now() - post.created).seconds / 60
+        delay = math.ceil((datetime.now() - post.created).seconds / 60)
         delays.append(delay)
-    return render_template("admin/manage-posts.html", posts=posts,
-                           delays=delays, createds=createds,
-                           categories=categories)
+        comment_count.append(len(post.comments))
+    return render_template("manage-posts.html", posts=posts, categories=categories,
+                           delays=delays, createds=createds, comment_count=comment_count,
+                           pageinate=pageinate)
 
 
-@admin.route("/delete-posts", methods=["GET", "POST"])
+@admin.route("/delete-posts", methods=["POST"])
 @login_required
 def delete_posts():
-    slugs = request.form.getlist('slug')
-    for slug in slugs:
-        post = Content.objects(slug=slug)
+    cids = request.form.getlist('cid')
+    for cid in cids:
+        post = Content.objects(id=cid)
         post.delete()
     flash(u"文章删除成功", "success")
     return redirect(url_for('admin.manage_posts'))
@@ -137,7 +148,7 @@ def manage_pages():
     createds = []
     for page in pages:
         createds.append(page.created.strftime("%Y-%m-%d"))
-    return render_template("admin/manage-pages.html", pages=pages, createds=createds)
+    return render_template("admin/templates/manage-pages.html", pages=pages, createds=createds)
 
 
 @admin.route('/delete-pages', methods=["POST"])

@@ -11,13 +11,14 @@ def index():
     return "index"
 
 
-# @ui.route("/article/<slug>")
-# def show_aticle(slug):
+@ui.route("/article/<slug>")
+def show_aticle(slug):
 #     site = Site.objects().first()
 #     posts= Post.objects(slug=slug)
 #     categories = Category.objects()
 #     return render_template("ui/index.html",
 #                            site=site, posts=posts, categories=categories)
+    return "ok"
 
 
 @ui.route("/<category>/")

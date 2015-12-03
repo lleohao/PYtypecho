@@ -68,7 +68,7 @@
                             {% for user in users %}
                                 <tr>
                                     <td><input type="checkbox" value="{{ user.id }}" name="uid"></td>
-                                    <td><a href="manage-pages.html?uid={{ user.id }}" class="badge" title="文章数">5</a>
+                                    <td><a href="../../admin/templates/manage-pages.html?uid={{ user.id }}" class="badge" title="文章数">5</a>
                                     </td>
                                     <td>
                                         <a href="users.html?uid={{ user.id }}">{{ user.screenName }}</a>

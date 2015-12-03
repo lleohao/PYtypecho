@@ -73,7 +73,6 @@
 {%- endmacro %}
 
 {% macro render_pagination(pagination, endpoint) %}
-    
     <ul class="pagination clear-margin">
         {% if pagination.prev_num == 0 %}
             <li class="disabled"><a href="{{ url_for(endpoint, page=pagination.prev_num) }}"><span aria-hidden="true">&laquo;</span></a></li>

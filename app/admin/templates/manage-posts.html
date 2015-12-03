@@ -1,0 +1,119 @@
+{% extends "admin-base.html" %}
+
+{% block title %}管理文章{% endblock %}
+
+{% block navbar %}
+    {{ widget.admin_nav(is_manage="active") }}
+{% endblock %}
+
+{% block page_title %}
+    {{ widget.page_title(title="管理文章", url="admin.write_post") }}
+{% endblock %}
+
+{% block main %}
+<div class="col-md-12">
+    <div class="list-operate clearfix">
+        <form class="form-inline" method="get" action="{{ url_for('admin.manage_posts') }}">
+            <div class="operate pull-left">
+                <label>
+                    <i class="sr-only">全选</i>
+                    <input type="checkbox" class="select-all">
+                </label>
+                <div class="btn-group btn-group-sm" role="group">
+                    <button class="btn btn-default dropdown-toggle" data-toggle="dropdown">选中项&nbsp;<span class="caret"></span></button>
+                    <ul class="dropdown-menu">
+                        <li><a href="#" class="delete">删除</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="search pull-right">
+                <select name="category" class="form-control">
+                    {% for category in categories %}
+                        <option value="{{ category.name }}">{{ category.name }}</option>
+                    {% endfor %}
+                </select>
+                <button class="btn btn-default" type="submit">筛选</button>
+            </div>
+        </form>
+        <!--搜索、设置-->
+    </div>
+    <!--操作栏-->
+    <form method="post" name="manage-post" action="{{ url_for('admin.delete_posts') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        <div class="manage-table">
+            <table class="table table-hover">
+                <colgroup>
+                    <col width="20">
+                    <col width="5%">
+                    <col width="60%">
+                    <col width="15%">
+                    <col width="20%">
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th> </th>
+                        <th> </th>
+                        <th>标题</th>
+                        <th>分类</th>
+                        <th>日期</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for post in posts %}
+                    <tr>
+                        <td><input type="checkbox" value="{{ post.id }}" name="cid"></td>
+                        <td>
+                            <!-- 管理文章评论/显示文章评论数 -->
+                            <a href="#"><span class="badge">{{ comment_count[loop.index0] }}</span></a>
+                        </td>
+                        <td>
+                            <a href="{{ url_for('admin.write_post', cid=post.id) }}">{{ post.title }}&nbsp;</a>
+                            <a href="{{ url_for('ui.show_aticle', slug=post.slug) }}" target="_blank" title="浏览 {{ post.title }}"><i class="glyphicon glyphicon-new-window"></i></a>
+                        </td>
+                        <td>{{ post.category.name }}</td>
+                        <td>
+                            {% if delays[loop.index0] > 60 %}
+                                {{ createds[loop.index0] }}
+                            {% else %}
+                                {{ delays[loop.index0] }}分钟前
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </form>
+    <!--管理文章列表-->
+    <div class="list-operate clearfix">
+        <div class="operate pull-left">
+            <label>
+                <i class="sr-only">全选</i>
+                <input type="checkbox" class="select-all">
+            </label>
+            <div class="btn-group" role="group">
+                <button class="btn btn-default dropdown-toggle" data-toggle="dropdown">选中项&nbsp;<span class="caret"></span></button>
+                <ul class="dropdown-menu">
+                    <li><a href="#" class="delete">删除</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="page-num pull-right">
+            {{ widget.render_pagination(pageinate, "admin.manage_posts") }}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script>
+       $(".select-all").click(function(){
+            var isChecked = $(this).prop("checked");
+            $("input[name='cid']").prop("checked", isChecked);
+        });
+        $(".delete").click(function(){
+            $("form")[1].submit();
+        })
+    </script>
+{% endblock %}
