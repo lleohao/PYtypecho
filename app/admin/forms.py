@@ -13,7 +13,7 @@ class ContentForm(Form):
     title = StringField(u"标题", validators=[InputRequired()])
     slug = StringField(u"Slug")
     tags = StringField(u"标签")
-    category = SelectField(u"选择分类", choices=[("normal",u"默认分类")], default="normal")
+    category = SelectField(u"选择分类", choices=[("normal", u"默认分类")], default="normal")
 
 
 class pageForm(Form):
@@ -36,13 +36,22 @@ class userForm(Form):
 
     ]
 
-    username = StringField(u"用户名*")
-    email = EmailField(u"电子邮件*")
-    screenName = StringField(u"用户昵称")
-    password = PasswordField(u"用户密码*", validators=[EqualTo("password2", message="密码不相同")])
-    password2 = PasswordField(u"用户密码确认*")
-    url = StringField(u"用户主页")
-    group = SelectField(u"用户组", choices=choices, default=["subscriber"])
+    user_id = HiddenField()
+    username = StringField(u"用户名*", validators=[InputRequired()],
+                           description=u"此用户名将作为用户登录时所用的名称.<br>请不要与系统中现有的用户名重复.")
+    email = EmailField(u"电子邮件*", validators=[InputRequired()],
+                       description=u"电子邮箱地址将作为此用户的主要联系方式.<br>请不要与系统中现有的电子邮箱地址重复.")
+    screenName = StringField(u"用户昵称",
+                             description=u"用户昵称可以与用户名不同, 用于前台显示.<br>如果你将此项留空, 将默认使用用户名.")
+    password = PasswordField(u"用户密码*", validators=[InputRequired(), EqualTo("password2", message="密码不相同")],
+                             description=u"为此用户分配一个密码.<br>建议使用特殊字符与字母、数字的混编样式,以增加系统安全性.")
+    password2 = PasswordField(u"用户密码确认*", validators=[InputRequired()],
+                              description=u"请确认你的密码, 与上面输入的密码保持一致.")
+    url = StringField(u"用户主页",
+                      description=u"此用户的个人主页地址, 请用 http:// 开头.")
+    group = SelectField(u"用户组", choices=choices, default=["subscriber"],
+                        description=u"不同的用户组拥有不同的权限.<br>具体的权限分配表请<a href=\"#\">参考这里</a>.")
+    submit = SubmitField(u"新增用户")
 
 
 class OptionGeneralForm(Form):

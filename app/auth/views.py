@@ -9,9 +9,6 @@ from .forms import LoginForm
 @auth.route("/")
 @auth.route("/login", methods=["GET","POST"])
 def login():
-    if session.get("username"):
-        return redirect(url_for("admin.main"))
-
     form = LoginForm()
     if form.validate_on_submit():
         user = User.objects(username=form.username.data).first()

@@ -1,7 +1,7 @@
 # coding: utf-8
 import math
 from datetime import datetime
-from flask import render_template, redirect, flash, request, url_for
+from flask import render_template, redirect, flash, request, url_for, session
 from flask.ext.login import login_required
 from . import admin
 from .forms import ContentForm, categoryForm, userForm, OptionGeneralForm
@@ -233,22 +233,44 @@ def delete_categories():
 
 # 用户相关
 @admin.route("/users", methods=["GET", "POST"])
+@admin.route("/users/<cid>")
 @login_required
-def users():
+def users(cid=None):
     form = userForm()
+    if cid:
+        change_user = User.objects(id=cid).first()
+        form.user_id.data = cid
+        form.username.data = change_user.username
+        form.email.data = change_user.email
+        form.screenName.data = change_user.screenName
+        form.url.data = change_user.url
+        form.group.data = change_user.group
+
     if form.validate_on_submit():
-        user = User(username=form.username.data, password=form.password.data, email=form.email.data, url=form.url.data, screenName=form.screenName.data, group=form.group.data)
-        user.save()
+        if form.user_id.data:
+            user = User.objects(id=form.user_id.data).first()
+            user.username = form.username.data
+            user.email = form.email.data
+            user.password = form.password.data
+            user.url = form.url.data
+            user.screenName = form.screenName.data
+            user.group = form.group.data
+            user.save()
+        else:
+            user = User(username=form.username.data, password=form.password.data, email=form.email.data, url=form.url.data, screenName=form.screenName.data, group=form.group.data)
+            user.save()
         flash(u"用户添加成功", "success")
         return redirect(url_for("admin.manage_users"))
-    return render_template("admin/users.html", form=form)
+    return render_template("users.html", form=form)
 
 
 @admin.route("/manage-users", methods=["GET", "POST"])
+@admin.route("/manage-users/page/<page>")
 @login_required
-def manage_users():
-    users = User.objects()
-    return render_template("admin/manage-users.html", users=users)
+def manage_users(page=1):
+    users = User.objects[(page-1)*5: page*5]
+    pageinate = User.objects.paginate(page=page, per_page=5)
+    return render_template("manage-users.html", users=users, pageinate=pageinate)
 
 
 @admin.route("/delete-users", methods=["GET", "POST"])
@@ -256,8 +278,12 @@ def manage_users():
 def delete_users():
     uids = request.form.getlist('uid')
     for uid in uids:
-        user = User(id=uid)
-        user.delete()
+        user = User.objects(id=uid).first()
+        if user.username == session['username']:
+            flash("禁止删除正在登录的用户", "danger")
+            return redirect(url_for('admin.manage_users'))
+        else:
+            user.delete()
     flash(u"用户删除成功", "success")
     return redirect(url_for('admin.manage_users'))
 
