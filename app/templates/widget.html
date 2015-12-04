@@ -18,8 +18,7 @@
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button">控制台</a>
                     <ul class="dropdown-menu">
                         <li><a href="{{ url_for('admin.main') }}">概要</a></li>
-                        <li><a href="profile.html">个人设置</a></li>
-                        <li><a href="themes.html">外观</a></li>
+                        <!--TODO: 添加个人设置--profile.html，外观选择--themes.html-->
                     </ul>
                 </li>
                 <li class="dropdown {{ is_write }}">
@@ -34,10 +33,9 @@
                     <ul class="dropdown-menu">
                         <li><a href="{{ url_for('admin.manage_posts') }}">文章</a></li>
                         <li><a href="{{ url_for('admin.manage_pages') }}">独立页面</a></li>
-                        <li><a href="manage-comments.html">评论</a></li>
+                        <li><a href="#">评论</a></li>
                         <li><a href="{{ url_for('admin.manage_categories') }}">分类</a></li>
-                        <li><a href="manage-tags.html">标签</a></li>
-                        <li><a href="manage-files.html">文件</a></li>
+                        <li><a href="#">文件</a></li>
                         <li><a href="{{ url_for('admin.manage_users') }}">用户</a></li>
                     </ul>
                 </li>
@@ -45,14 +43,13 @@
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button">设置</a>
                     <ul class="dropdown-menu">
                         <li><a href="{{ url_for('admin.options_general') }}">基本</a></li>
-                        <li><a href="option-discussion.hrml">评论</a></li>
-                        <li><a href="option-reading.html">阅读</a></li>
-                        <li><a href="option-permalink.html">永久链接</a></li>
+                        <!--TODO: 添加评论管理、阅读管理-->
                     </ul>
                 </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="{{ url_for('ui.index') }}">网站</a></li>
+                <!--TODO: 个人设置完成后链接至这里-->
                 <li><a href="#">{{ session['username'] }}</a></li>
                 <li><a href="{{ url_for('auth.logout') }}">登出</a></li>
             </ul>

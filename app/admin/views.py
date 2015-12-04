@@ -29,7 +29,7 @@ def write_post(cid=None):
         content = Content.objects(id=cid).first()
         form.title.data = content.title
         form.slug.data = content.slug
-        text = content.text
+        form.content.data = content.text
         category = content.category.name
         form.tags.data = str(content.tags).join(",")
         form.content_id.data = cid
@@ -41,7 +41,7 @@ def write_post(cid=None):
         content_id = form.content_id.data
         title = form.title.data
         slug = form.slug.data
-        text = request.form["edit-area-markdown-doc"]
+        text = form.content.data
         tags = form.tags.data.split(",")
         category = Category.objects(slug=form.category.data).first()
 
@@ -65,7 +65,7 @@ def write_post(cid=None):
                 post.save()
             flash(u"保存草稿成功", "success")
             # FIXME: 这样会存在刷新多次提交的问题，后期需要改进
-            return render_template("write-post.html", form=form, content=text)
+            return render_template("write-post.html", form=form)
         else:
             post.status = True
             post.save()
@@ -76,7 +76,7 @@ def write_post(cid=None):
                 post.save()
             flash(u"发布文章成功", "success")
             return redirect(url_for("admin.manage_posts"))
-    return render_template("write-post.html", form=form, categories=categories, content=text)
+    return render_template("write-post.html", form=form, categories=categories)
 
 
 @admin.route("/manage-posts")
@@ -126,8 +126,8 @@ def write_page(cid=None):
         content = Content.objects(id=cid).first()
         form.title.data = content.title
         form.slug.data = content.slug
-        text = content.text
-        form.content_id.data = cid
+        form.content.data = content.text
+        form.content_id.data = content.id
     else:
         pass
 
@@ -135,7 +135,7 @@ def write_page(cid=None):
         content_id = form.content_id.data
         title = form.title.data
         slug = form.slug.data
-        text = request.form["edit-area-markdown-doc"]
+        text = form.content.data
 
         if content_id:
             page = Content.objects(id=content_id).first()
@@ -149,16 +149,24 @@ def write_page(cid=None):
             page.status = False
             page.save()
             form.content_id.data = page.id
+            if slug == "":
+                page.slug = str(page.id)
+                form.slug.data = str(page.id)
+                page.save()
             flash(u"保存草稿成功", "success")
             # FIXME: 这样会存在刷新多次提交的问题，后期需要改进
-            return render_template("write-page.html", form=form, content=text)
+            return render_template("write-page.html", form=form)
         else:
             page.status = True
             page.save()
             form.content_id.data = page.id
-            flash(u"发布页面成功", "success")
-            return redirect(url_for("admin.manage_pages"))
-    return render_template("write-page.html", form=form, content=text)
+            if slug == "":
+                page.slug = str(page.id)
+                form.slug.data = str(page.id)
+                page.save()
+            flash(u"发布文章成功", "success")
+            return redirect(url_for("admin.manage_page"))
+    return render_template("write-page.html", form=form)
 
 
 @admin.route("/manage-pages")
@@ -178,9 +186,9 @@ def manage_pages(page=1):
 @admin.route('/delete-pages', methods=["POST"])
 @login_required
 def delete_pages():
-    slugs = request.form.getlist('slug')
-    for slug in slugs:
-        page = Content.objects(slug=slug)
+    cids = request.form.getlist('cid')
+    for cid in cids:
+        page = Content.objects(id=cid)
         page.delete()
     flash(u"页面删除成功", "success")
     return redirect(url_for('admin.manage_pages'))
