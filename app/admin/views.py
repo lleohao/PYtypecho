@@ -161,16 +161,18 @@ def write_page(cid=None):
     return render_template("write-page.html", form=form, content=text)
 
 
-@admin.route('/manage-pages')
+@admin.route("/manage-pages")
+@admin.route("/manage-pages/page/<page>")
 @login_required
-def manage_pages():
-    pages = Content.objects(type="page")
+def manage_pages(page=1):
+    pages = Content.objects(type="page")[(page-1)*5: page*5]
+    pageinate = Category.objects.paginate(page=page, per_page=5)
     createds = []
     comment_num = []
     for page in pages:
         createds.append(page.created.strftime("%Y-%m-%d"))
         comment_num.append(len(page.comments))
-    return render_template("manage-pages.html", pages=pages, createds=createds, comment_num=comment_num)
+    return render_template("manage-pages.html", pages=pages, pageinate=pageinate, createds=createds, comment_num=comment_num)
 
 
 @admin.route('/delete-pages', methods=["POST"])

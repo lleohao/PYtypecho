@@ -91,12 +91,7 @@
             </div>
         </div>
         <div class="page-num pull-right">
-            <ul class="pagination clear-margin">
-                <li><a href="#"><span aria-hidden="true">&laquo;</span></a></li>
-                <li><a href="#">1</a></li>
-                <li><a href="#">2</a></li>
-                <li><a href="#"><span aria-hidden="true">&raquo;</span></a></li>
-            </ul>
+            {{ widget.render_pagination(pageinate, "admin.manage_pages") }}
         </div>
     </div>
 </div>

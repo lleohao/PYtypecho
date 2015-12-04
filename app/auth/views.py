@@ -9,7 +9,7 @@ from .forms import LoginForm
 @auth.route("/")
 @auth.route("/login", methods=["GET","POST"])
 def login():
-    if session['username']:
+    if session.get('username'):
         return redirect(url_for('admin.main'))
     form = LoginForm()
     if form.validate_on_submit():
