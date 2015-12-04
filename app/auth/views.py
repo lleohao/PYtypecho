@@ -1,6 +1,6 @@
 # coding: utf-8
-from flask import render_template, redirect, request, url_for, flash
-from flask.ext.login import login_required, login_user, logout_user, session
+from flask import render_template, redirect, request, url_for, flash, session
+from flask.ext.login import login_required, login_user, logout_user, current_user
 from . import auth
 from ..modules import User
 from .forms import LoginForm
@@ -9,6 +9,8 @@ from .forms import LoginForm
 @auth.route("/")
 @auth.route("/login", methods=["GET","POST"])
 def login():
+    if session['username']:
+        return redirect(url_for('admin.main'))
     form = LoginForm()
     if form.validate_on_submit():
         user = User.objects(username=form.username.data).first()
