@@ -9,6 +9,14 @@
 {% block title %}
     {{ site.site_title }}
 {% endblock %}
+
+{% block page_link %}
+    {% for page in pages %}
+        {{ tools.create_page(page) }}
+    {% endfor %}
+{% endblock %}
+
+
 {% block site_title %}
     {{ site.site_title }}
 {% endblock %}

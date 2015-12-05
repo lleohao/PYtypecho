@@ -62,7 +62,7 @@
                             <td><input type="checkbox" name="cid" value="{{ category.id }}"></td>
                             <td>
                                 <a href="{{ url_for('admin.category', cid=category.id) }}">{{ category.name }}</a>
-                                <a href="{{ url_for('ui.show_slug', slug=category.slug) }}" title="浏览 {{ category.name }}" target="_blank"><i class="glyphicon glyphicon-new-window"></i></a>
+                                <a href="{{ url_for('ui.show_category', slug=category.slug) }}" title="浏览 {{ category.name }}" target="_blank"><i class="glyphicon glyphicon-new-window"></i></a>
                             </td>
                             <td>{{ category.slug }}</td>
                             <td>{{ category.description }}</td>

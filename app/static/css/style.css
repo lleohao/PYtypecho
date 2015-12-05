@@ -75,11 +75,10 @@ body {
 
 .container {
     width: 960px;
-    margin: 48px auto;
     margin: 3.42857143rem auto;
-    padding: 0 40px;
     padding: 0 2.85714236rem;
     background: #ffffff;
+    box-shadow: 0 2px 6px rgba(100, 100, 100, 0.3);
 }
 
 .site-header {

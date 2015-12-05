@@ -165,7 +165,7 @@ def write_page(cid=None):
                 form.slug.data = str(page.id)
                 page.save()
             flash(u"发布文章成功", "success")
-            return redirect(url_for("admin.manage_page"))
+            return redirect(url_for("admin.manage_pages"))
     return render_template("write-page.html", form=form)
 
 
