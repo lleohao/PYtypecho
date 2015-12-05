@@ -212,7 +212,6 @@ def manage_categories(page=1):
 @admin.route("/category", methods=["GET", "POST"])
 @login_required
 def category():
-    # TODO: 修复分类不能添加
     cid = request.args.get("cid")
 
     if cid is not None:
