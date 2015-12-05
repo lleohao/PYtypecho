@@ -3,6 +3,7 @@
 <head>
     {% block head %}
         <meta charset="UTF-8">
+        {% block meta %}{% endblock %}
         <title>{% block title %}{% endblock %}</title>
         {% block styles %}
             <link rel="stylesheet" href="{{ url_for('static', filename='css/reset.css') }}">
@@ -21,7 +22,6 @@
             <nav role="navigation" class="nav">
                 <ul class="nav-menu">
                     <li class="menu-item"><a href="/">首页</a></li>
-                    <li class="menu-item"><a href="#">关于</a></li>
                     {% block page_link %}{% endblock %}
                 </ul>
             </nav>
@@ -30,12 +30,7 @@
         <div id="main" class="clear-fix site-main">
             <div id="content" class="page-content">
                 {% block article %}{% endblock %}
-                <nav id="page-nav" class="navigation" role="navigation">
-                    <h3 class="sr-only">加载更多</h3>
-                    <div class="show-many">
-                        <a href="#">加载更多---></a>
-                    </div>
-                </nav>
+                {% block nav_page %}{% endblock %}
             </div>
 
             <div id="aside" class="aside-area" role="complementary">
@@ -43,12 +38,11 @@
                     <form action="#" role="search" method="get" id="searchform">
                         <div>
                             <label for="keyword" class="sr-only">搜索：</label>
-                            <input type="text" name="keyword" id="keyword" placeholder="输入关键字">
+                            <input type="text" name="keyword" id="bdcsMain" placeholder="输入关键字">
                             <input type="submit" id="searchsubmit" value="搜索">
                         </div>
                     </form>
-                </aside>
-                -->
+                </aside>-->
                 <aside id="category" class="widget widget-category">
                     <h3 class="widget-title">分类目录</h3>
                     <ul>
@@ -63,9 +57,6 @@
                         {% else %}
                             <li class="opt-item"><a href="{{ url_for('auth.login') }}">登录</a></li>
                         {% endif %}
-
-{#                        <li class="opt-item"><a href="#">订阅</a></li>#}
-{#                        <li class="opt-item"><a href="#">分享</a></li>#}
                     </ul>
                 </aside>
             </div>

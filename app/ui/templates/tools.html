@@ -1,5 +1,5 @@
 {% macro create_page(page) -%}
-    <li class="menu-item"><a href="/{{ page.slug }}.html">{{ name }}</a></li>
+    <li class="menu-item"><a href="/{{ page.slug }}.html">{{ page.name }}</a></li>
 {%- endmacro %}
 
 {% macro create_category(categories) %}
@@ -25,7 +25,7 @@
         </div>
         <footer class="post-meta">
             <span class="pushtime">本条目发布于<time datetime="{{ post.created }}">{{ post.created }}</time></span>
-            <span class="category">属于<a href="#" class="categories">{{ post.category }}</a> 分类，</span>
+            <span class="category">属于&nbsp;<a href="#" class="categories">{{ post.category.name }}</a> 分类，</span>
             <span class="tag">标签：
                 {% for tag in post.tags -%}
                     <a href="{{ url_for('ui.index', tag=tag) }}" class="tags">{{ tag }}</a>
@@ -34,3 +34,19 @@
         </footer>
     </article>
 {%- endmacro %}
+
+{% macro nav_page(pagination, endpoint) %}
+<nav id="page-nav" class="navigation" role="navigation">
+    {% if pagination.prev_num != 0 %}
+    <div class="show-many">
+        <a href="{{ url_for(endpoint, page=pagination.prev_num) }}"><---Previous</a>
+    </div>
+    {% endif %}
+
+    {% if pagination.page != pagination.pages %}
+    <div class="show-many">
+        <a href="{{ url_for(endpoint, page=pagination.next_num) }}">Next---></a>
+    </div>
+    {% endif %}
+</nav>
+{% endmacro %}
