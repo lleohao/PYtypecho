@@ -22,10 +22,6 @@ pre {
     font-family: source_code_prolight, monospace !important;
 }
 
-ul li {
-    list-style: none;
-}
-
 a {
     color: #000;
 }
@@ -138,6 +134,15 @@ body {
     margin-bottom: 5.14285714rem;
     padding-bottom: 1.71428571rem;
     word-wrap: break-word;
+}
+
+.post-content > ul {
+    list-style: disc;
+    margin-left: 2.5em;
+}
+.post-content > ol {
+    list-style: decimal;
+    margin-left: 2.5em;
 }
 
 .post-header {

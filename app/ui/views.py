@@ -24,20 +24,22 @@ def index(page=1):
 def show_aticle(slug):
     site = Options.objects().first()
     posts = Content.objects(slug=slug)
+    post = Content.objects(slug=slug).first()
     categories = Category.objects()
     pages = Content.objects(type="page").order_by("+created")
     return render_template("article.html",
-                           site=site, posts=posts, categories=categories, pages=pages)
+                           site=site, post=post, posts=posts, categories=categories, pages=pages)
 
 
 @ui.route("/<slug>/")
 def show_page(slug):
     site = Options.objects().first()
     posts = Content.objects(slug=slug)
+    post = Content.objects(slug=slug).first()
     categories = Category.objects()
     pages = Content.objects(type="page").order_by("+created")
     return render_template("article.html",
-                           site=site, posts=posts, categories=categories, pages=pages)
+                           site=site, post=post, posts=posts, categories=categories, pages=pages)
 
 
 @ui.route("/category/<slug>/")
