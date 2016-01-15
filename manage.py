@@ -3,7 +3,13 @@ from app import create_app
 from app.modules import User, Content, Category, Comment, Options
 from flask.ext.script import Manager, Shell
 
-app = create_app(os.getenv("FLASK_CONFIG") or "default")
+
+if os.name == "posix":
+    FLASK_CONFIG = "product"
+else:
+    FLASK_CONFIG = "develop"
+
+app = create_app(FLASK_CONFIG)
 manager = Manager(app)
 
 
