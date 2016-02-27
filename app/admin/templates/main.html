@@ -3,7 +3,7 @@
 {% block title %}控制台{% endblock %}
 
 {% block navbar %}
-    {{ widget.admin_nav(is_main="active") }}
+    {{ widget.admin_nav(is_main="active", current_user=current_user) }}
 {% endblock %}
 
 {%- block page_title %}

@@ -14,7 +14,7 @@ from ..modules import Content, Category, User, Options
 def main():
     page_num = Content.objects(type="post").count()
     op = Options.objects.first()
-    return render_template("main.html", page_num=page_num, op=op)
+    return render_template("main.html", page_num=page_num, op=op, current_user=current_user)
 
 
 # 文章相关内容
