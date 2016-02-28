@@ -1,11 +1,8 @@
 # -*- coding:utf-8 -*-
-import random, string
-from datetime import date
 from flask.ext.wtf import Form
 from flask.ext.wtf.html5 import EmailField, URLField
-from wtforms import StringField, SubmitField, PasswordField, BooleanField, TextAreaField, SelectMultipleField, \
-    SelectField, HiddenField
-from wtforms.validators import InputRequired, Length, Email, Regexp, EqualTo
+from wtforms import StringField, SubmitField, PasswordField, TextAreaField, SelectField, HiddenField
+from wtforms.validators import InputRequired, EqualTo
 
 
 class ContentForm(Form):
@@ -14,12 +11,19 @@ class ContentForm(Form):
     slug = StringField(u"Slug")
     tags = StringField(u"标签")
     content = TextAreaField()
-    category = SelectField(u"选择分类", choices=[("normal", u"默认分类")], default="normal")
+    category = SelectField(u"选择分类")
 
-
-class pageForm(Form):
-    title = StringField(u"标题", validators=[InputRequired()])
-    slug = StringField(u"Slug")
+    def __init__(self, content=None):
+        super(ContentForm, self).__init__()
+        if content:
+            self.content_id.data = content.id
+            self.title.data = content.title
+            self.slug.data = content.slug
+            self.content.data = content.md_text
+            self.category.default = content.category.slug
+            # fixme: 无法更改 default 的值
+            if len(content.tags) > 0:
+                self.tags.data = ",".join(content.tags)
 
 
 class categoryForm(Form):

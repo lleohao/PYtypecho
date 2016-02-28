@@ -12,7 +12,7 @@
 
 {% block main %}
 <div class="col-md-12 welcomebord">
-    <p>目前有 <a href="#">{{ page_num }}</a> 篇文章, 其中有 <a href="#">{{ op.comment_index }}</a> 篇文章有新的评论。</P>
+    <p>目前有 <a href="{{ url_for('admin.manage_posts') }}">{{ post_nums }}</a> 篇文章, 其中有 <a href="#">{{ site_option.comment_index }}</a> 篇文章有新的评论。</P>
     <p>点击下面的链接快速开始:</p>
     <ul>
         <li><a href="{{ url_for('admin.write_post') }}">撰写新文章</a></li>

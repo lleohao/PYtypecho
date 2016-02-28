@@ -1,12 +1,23 @@
 # coding: utf-8
+import uuid
 from datetime import datetime
-
+from flask import Markup
+from markdown import markdown
 from flask.ext.login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from . import db, login_manager
 
 
+def create_only_slug(form):
+    if form.slug.data == "":
+        slug = str(datetime.now())[0:10] + "-" + str(uuid.uuid4())[0:4]
+    else:
+        slug = form.slug.data
+    return slug
+
+
+# 用户数据模型
 class User(UserMixin, db.Document):
     """
     admin test count
@@ -40,6 +51,7 @@ def user_load(user_id):
     return User.objects(id=user_id).first()
 
 
+# 评论数据模型
 class Comment(db.EmbeddedDocument):
     """
     comment1 = Comment(author_name="lleohao", content="good post")
@@ -51,6 +63,7 @@ class Comment(db.EmbeddedDocument):
     content = db.StringField(required=True)
 
 
+# 分类数据模型
 class Category(db.Document):
     """
     Category(name="默认分类", slug="normal", description="这是系统默认的分类")
@@ -69,6 +82,7 @@ class Category(db.Document):
     }
 
 
+# 内容数据模型
 class Content(db.DynamicDocument):
     """
     post = Content(title="test post", slug="test", status=True, type="post")
@@ -78,12 +92,11 @@ class Content(db.DynamicDocument):
     slug = db.StringField(max_length=255, required=True, unique=True)
     category = db.ReferenceField(Category)
     tags = db.ListField(db.StringField())
-    text = db.StringField()
+    md_text = db.StringField()
+    html_text = db.StringField()
     status = db.BooleanField(default=False)
     type = db.StringField(choices=["post", "page"])
-
     comments = db.ListField(db.EmbeddedDocumentField(Comment))
-
     meta = {
         'indexes': [
             'status',
@@ -95,7 +108,23 @@ class Content(db.DynamicDocument):
         ]
     }
 
+    def set_val(self, form):
+        self.created = datetime.now()
+        self.title = form.title.data
+        self.slug = create_only_slug(form)
+        self.md_text = form.content.data
+        if form.tags.data is not "":
+            print(form.tags.data)
+            self.tags = form.tags.data.split(",")
+        else:
+            self.tags = []
+        self.category = Category.objects(slug=form.category.data).first()
 
+    def clean(self):
+        self.html_text = Markup(markdown(self.md_text))
+
+
+# 网站设置属性数据模型
 class Options(db.Document):
     """
     Options(site_url="lleohao.com", site_title="Lleohao's Blog", site_keyword="blog,python")
