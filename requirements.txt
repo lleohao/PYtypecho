@@ -2,7 +2,6 @@ dominate==2.1.17
 Flask==0.10.1
 Flask-Bootstrap==3.3.5.7
 Flask-Login==0.3.2
-Flask-Markdown==0.3
 flask-mongoengine==0.7.5
 Flask-Script==2.0.5
 Flask-WTF==0.12
