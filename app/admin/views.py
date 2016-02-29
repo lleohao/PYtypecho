@@ -6,7 +6,7 @@ from flask import render_template, redirect, flash, request, url_for, session
 from flask.ext.login import login_required, current_user
 
 from . import admin
-from .forms import ContentForm, categoryForm, userForm, OptionGeneralForm
+from .forms import postForm, pageForm, categoryForm, userForm, OptionGeneralForm
 from ..modules import Category, User, Options, Content
 
 
@@ -34,10 +34,10 @@ def write_post(cid=None):
     if cid:
         # 存在 cid 说明是在修改文章，将文章内容绑定到 form 表单中
         post = Content.objects(id=cid).first()
-        form = ContentForm(post)
+        form = postForm(post)
     else:
         # 不存在则设置默认样式
-        form = ContentForm()
+        form = postForm()
     # 为 category 表单赋值选择项
     categories = Category.objects()
     form.category.choices = [(cat.slug, cat.name) for cat in categories]
@@ -51,7 +51,7 @@ def write_post(cid=None):
             post = Content.objects(id=form.content_id.data).first()
         else:
             post = Content(type="post")
-        post.set_val(form)
+        post.set_val(form, "post")
 
         if request.form["submit"] == "save":
             post.status = False
@@ -90,7 +90,7 @@ def manage_posts(page=1):
         comment_count.append(len(post.comments))
     return render_template("manage-posts.html", posts=posts, categories=categories,
                            delays=delays, createds=createds, comment_count=comment_count,
-                           pageinate=pageinate)
+                           pageinate=pageinate, current_user=current_user)
 
 
 @admin.route("/delete-posts", methods=["POST"])
@@ -109,50 +109,34 @@ def delete_posts():
 @admin.route("/write-page/<cid>/")
 @login_required
 def write_page(cid=None):
-    form = ContentForm()
+    # 兼容性写法
+    if request.args.get("cid"):
+        cid = request.args.get("cid")
+
+    # 创建 form 表单内容
     if cid:
-        content = Content.objects(id=cid).first()
-        form.title.data = content.title
-        form.slug.data = content.slug
-        form.content.data = content.text
-        form.content_id.data = content.id
+        # 存在 cid 说明是在修改页面，将文章内容绑定到 form 表单中
+        page = Content.objects(id=cid).first()
+        form = pageForm(page)
     else:
-        pass
+        form = pageForm()
 
     if form.validate_on_submit():
-        content_id = form.content_id.data
-        title = form.title.data
-        slug = form.slug.data
-        text = form.content.data
-
-        if content_id:
-            page = Content.objects(id=content_id).first()
-            page.title = title
-            page.slug = slug
-            page.text = text
+        if form.content_id.data:
+            page = Content.objects(id=form.content_id.data).first()
         else:
-            page = Content(title=title, slug=slug, text=text, type="page")
+            page = Content(type="page")
+        page.set_val(form, "page")
 
         if request.form["submit"] == "save":
             page.status = False
             page.save()
-            form.content_id.data = page.id
-            if slug == "":
-                page.slug = str(page.id)
-                form.slug.data = str(page.id)
-                page.save()
             flash(u"保存草稿成功", "success")
-            # FIXME: 这样会存在刷新多次提交的问题，后期需要改进
-            return render_template("write-page.html", form=form)
+            return redirect(url_for("admin.write_page", cid=page.id))
         else:
             page.status = True
             page.save()
-            form.content_id.data = page.id
-            if slug == "":
-                page.slug = str(page.id)
-                form.slug.data = str(page.id)
-                page.save()
-            flash(u"发布文章成功", "success")
+            flash(u"发布页面成功", "success")
             return redirect(url_for("admin.manage_pages"))
     return render_template("write-page.html", form=form)
 
@@ -169,7 +153,7 @@ def manage_pages(page=1):
         createds.append(page.created.strftime("%Y-%m-%d"))
         comment_num.append(len(page.comments))
     return render_template("manage-pages.html", pages=pages, pageinate=pageinate, createds=createds,
-                           comment_num=comment_num)
+                           comment_num=comment_num, current_user=current_user)
 
 
 @admin.route('/delete-pages', methods=["POST"])

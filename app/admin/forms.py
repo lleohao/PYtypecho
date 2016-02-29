@@ -5,7 +5,7 @@ from wtforms import StringField, SubmitField, PasswordField, TextAreaField, Sele
 from wtforms.validators import InputRequired, EqualTo
 
 
-class ContentForm(Form):
+class postForm(Form):
     content_id = HiddenField()
     title = StringField(u"标题", validators=[InputRequired()])
     slug = StringField(u"Slug")
@@ -14,7 +14,7 @@ class ContentForm(Form):
     category = SelectField(u"选择分类")
 
     def __init__(self, content=None):
-        super(ContentForm, self).__init__()
+        super(postForm, self).__init__()
         if content:
             self.content_id.data = content.id
             self.title.data = content.title
@@ -24,6 +24,21 @@ class ContentForm(Form):
             # fixme: 无法更改 default 的值
             if len(content.tags) > 0:
                 self.tags.data = ",".join(content.tags)
+
+
+class pageForm(Form):
+    content_id = HiddenField()
+    title = StringField(u"标题", validators=[InputRequired()])
+    slug = StringField(u"Slug")
+    content = TextAreaField()
+
+    def __init__(self, content=None):
+        super(pageForm, self).__init__()
+        if content:
+            self.content_id.data = content.id
+            self.title.data = content.title
+            self.slug.data = content.slug
+            self.content.data = content.md_text
 
 
 class categoryForm(Form):

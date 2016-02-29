@@ -3,7 +3,7 @@
 {% block title %}管理文章{% endblock %}
 
 {% block navbar %}
-    {{ widget.admin_nav(is_manage="active") }}
+    {{ widget.admin_nav(is_manage="active", current_user=current_user) }}
 {% endblock %}
 
 {% block page_title %}

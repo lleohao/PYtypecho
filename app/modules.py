@@ -108,17 +108,21 @@ class Content(db.DynamicDocument):
         ]
     }
 
-    def set_val(self, form):
+    def set_val(self, form, type):
         self.created = datetime.now()
         self.title = form.title.data
         self.slug = create_only_slug(form)
         self.md_text = form.content.data
-        if form.tags.data is not "":
-            print(form.tags.data)
-            self.tags = form.tags.data.split(",")
+        if type == 'post':
+            if form.tags.data is not "":
+                self.tags = form.tags.data.split(",")
+            else:
+                self.tags = []
+            self.category = Category.objects(slug=form.category.data).first()
         else:
-            self.tags = []
-        self.category = Category.objects(slug=form.category.data).first()
+            self.tags = None
+            self.category = None
+
 
     def clean(self):
         self.html_text = Markup(markdown(self.md_text))
