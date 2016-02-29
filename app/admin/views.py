@@ -179,7 +179,8 @@ def manage_categories(page=1):
         categories = Category.objects[(page - 1) * 5: page * 5]
         pageinate = Category.objects.paginate(page=page, per_page=5)
     count = [Content.objects(category=category).count() for category in categories]
-    return render_template("manage-categories.html", categories=categories, count=count, pageinate=pageinate)
+    return render_template("manage-categories.html", categories=categories, count=count, pageinate=pageinate,
+                           current_user=current_user)
 
 
 @admin.route("/category", methods=["GET", "POST"])
@@ -199,7 +200,7 @@ def category():
         categories.save()
         flash(u"分类保存成功", "success")
         return redirect(url_for("admin.manage_categories"))
-    return render_template("categories.html", form=form)
+    return render_template("categories.html", form=form, current_user=current_user)
 
 
 @admin.route("/delete-categories", methods=["POST"])
@@ -244,7 +245,7 @@ def users(cid=None):
             user.save()
         flash(u"用户添加成功", "success")
         return redirect(url_for("admin.manage_users"))
-    return render_template("users.html", form=form)
+    return render_template("users.html", form=form, current_user=current_user)
 
 
 @admin.route("/manage-users", methods=["GET", "POST"])
@@ -253,7 +254,7 @@ def users(cid=None):
 def manage_users(page=1):
     users = User.objects[(page - 1) * 5: page * 5]
     pageinate = User.objects.paginate(page=page, per_page=5)
-    return render_template("manage-users.html", users=users, pageinate=pageinate)
+    return render_template("manage-users.html", users=users, pageinate=pageinate, current_user=current_user)
 
 
 @admin.route("/delete-users", methods=["GET", "POST"])
@@ -294,4 +295,4 @@ def options_general():
         op.save()
         flash(u"网站信息保存成功", "success")
         return redirect(url_for("admin.options_general"))
-    return render_template("options-general.html", form=form)
+    return render_template("options-general.html", form=form, current_user=current_user)

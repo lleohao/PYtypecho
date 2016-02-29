@@ -2,7 +2,7 @@
 {% block title %}新增用户{% endblock %}
 
 {% block navbar %}
-    {{ widget.admin_nav(is_manage="active") }}
+    {{ widget.admin_nav(is_manage="active", current_user=current_user) }}
 {% endblock %}
 
 {% block page_title %}

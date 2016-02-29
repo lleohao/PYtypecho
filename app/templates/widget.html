@@ -32,9 +32,11 @@
                     <ul class="dropdown-menu">
                         <li><a href="{{ url_for('admin.manage_posts') }}">文章</a></li>
                         <li><a href="{{ url_for('admin.manage_pages') }}">独立页面</a></li>
-                        <li><a href="#">评论</a></li>
+                        {# <li><a href="#">评论</a></li>#}
+                        {# todo: 后续添加评论管理                 #}
                         <li><a href="{{ url_for('admin.manage_categories') }}">分类</a></li>
-                        <li><a href="#">文件</a></li>
+                        {# <li><a href="#">文件</a></li>#}
+                        {# todo: 后续添加文件                   #}
                         <li><a href="{{ url_for('admin.manage_users') }}">用户</a></li>
                     </ul>
                 </li>

@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block navbar %}
-    {{ widget.admin_nav(is_options="active") }}
+    {{ widget.admin_nav(is_options="active", current_user=current_user) }}
 {% endblock %}
 
 {% block page_title %}
