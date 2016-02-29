@@ -21,7 +21,7 @@ def main():
 
 
 # 文章相关内容
-@admin.route("/write-post/<cid>")
+@admin.route("/write-post/cid/<cid>")
 @admin.route("/write-post/", methods=["GET", "POST"])
 @login_required
 def write_post(cid=None):
@@ -68,7 +68,7 @@ def write_post(cid=None):
 
 
 @admin.route("/manage-posts")
-@admin.route("/manage-categories/page/<int:page>")
+@admin.route("/manage-posts/page/<int:page>")
 @login_required
 def manage_posts(page=1):
     cat = request.args.get("category")
@@ -106,7 +106,7 @@ def delete_posts():
 
 # 页面相关内容
 @admin.route("/write-page", methods=["GET", "POST"])
-@admin.route("/write-page/<cid>/")
+@admin.route("/write-page/cid/<cid>")
 @login_required
 def write_page(cid=None):
     # 兼容性写法
@@ -142,11 +142,11 @@ def write_page(cid=None):
 
 
 @admin.route("/manage-pages")
-@admin.route("/manage-pages/page/<page>")
+@admin.route("/manage-pages/page/<int:page>")
 @login_required
 def manage_pages(page=1):
     pages = Content.objects(type="page")[(page - 1) * 5: page * 5]
-    pageinate = Category.objects.paginate(page=page, per_page=5)
+    pageinate = Content.objects.paginate(page=page, per_page=5)
     createds = []
     comment_num = []
     for page in pages:
@@ -216,7 +216,7 @@ def delete_categories():
 
 # 用户相关
 @admin.route("/users", methods=["GET", "POST"])
-@admin.route("/users/<cid>")
+@admin.route("/users/cid/<cid>")
 @login_required
 def users(cid=None):
     form = userForm()
