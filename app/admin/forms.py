@@ -42,10 +42,19 @@ class pageForm(Form):
 
 
 class categoryForm(Form):
+    category_id = HiddenField()
     name = StringField(u"分类名称*", validators=[InputRequired()])
     slug = StringField(u"分类缩略名*", description=u"分类缩略名用于创建友好的链接形式, 建议使用字母, 数字, 下划线和横杠", validators=[InputRequired()])
     description = TextAreaField(u"分类描述", description=u"此文字用于描述分类, 在有的主题中它会被显示.")
     submit = SubmitField(u"保存分类")
+
+    def __init__(self, category=None):
+        super(categoryForm, self).__init__()
+        if category:
+            self.category_id.data = category.id
+            self.name.data = category.name
+            self.slug.data = category.slug
+            self.description.data = category.description
 
 
 class userForm(Form):

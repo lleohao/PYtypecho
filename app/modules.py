@@ -1,9 +1,10 @@
 # coding: utf-8
 import uuid
 from datetime import datetime
+
 from flask import Markup
-from markdown import markdown
 from flask.ext.login import UserMixin
+from markdown import markdown
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from . import db, login_manager
@@ -70,7 +71,7 @@ class Category(db.Document):
     Category(name="Python", slug="python", description="").save()
     """
     name = db.StringField(required=True, unique=True)
-    slug = db.StringField()
+    slug = db.StringField(required=True, unique=True)
     description = db.StringField()
 
     meta = {
@@ -80,6 +81,11 @@ class Category(db.Document):
             '#name'
         ]
     }
+
+    def set_val(self, form):
+        self.name = form.name.data
+        self.slug = form.slug.data
+        self.description = form.description.data
 
 
 # 内容数据模型

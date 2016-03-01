@@ -11,6 +11,7 @@
 
 {% block main %}
     <div class="col-md-6 col-md-offset-3">
-        {{ wtf.quick_form(form, button_map={"submit" :"primary"}) }}
+
+        {{ wtf.quick_form(form, button_map={"submit" :"primary"}, action=url_for('admin.category')) }}
     </div>
 {% endblock %}

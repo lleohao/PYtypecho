@@ -20,7 +20,7 @@ def main():
     return render_template("main.html", post_nums=post_nums, site_option=site_option, current_user=current_user)
 
 
-# 文章相关内容
+# 编写、修改文章
 @admin.route("/write-post/cid/<cid>")
 @admin.route("/write-post/", methods=["GET", "POST"])
 @login_required
@@ -67,21 +67,23 @@ def write_post(cid=None):
     return render_template("write-post.html", form=form, current_user=current_user)
 
 
+# 管理文章
 @admin.route("/manage-posts")
 @admin.route("/manage-posts/page/<int:page>")
 @login_required
 def manage_posts(page=1):
-    cat = request.args.get("category")
-    if cat:
-        cat = Category.objects(name=cat).first()
-        posts = Content.objects(type="post", category=cat)[(page - 1) * 5: page * 5]
+    # 存在 category 参数说明是在按照分类筛选文章
+    category_name = request.args.get("category")
+    if category_name:
+        category_name = Category.objects(name=category_name).first()
+        posts = Content.objects(type="post", category=category_name)[(page - 1) * 5: page * 5]
     else:
         posts = Content.objects(type="post")[(page - 1) * 5: page * 5]
 
     pageinate = Content.objects.paginate(page=page, per_page=5)
     categories = Category.objects()
     createds = []
-    delays = []
+    delays = []  # 格式化文章发布时间
     comment_count = []
     for post in posts:
         createds.append(post.created.strftime("%Y-%m-%d"))
@@ -93,6 +95,7 @@ def manage_posts(page=1):
                            pageinate=pageinate, current_user=current_user)
 
 
+# 删除文章
 @admin.route("/delete-posts", methods=["POST"])
 @login_required
 def delete_posts():
@@ -104,7 +107,7 @@ def delete_posts():
     return redirect(url_for('admin.manage_posts'))
 
 
-# 页面相关内容
+# 编写、修改页面
 @admin.route("/write-page", methods=["GET", "POST"])
 @admin.route("/write-page/cid/<cid>")
 @login_required
@@ -141,13 +144,14 @@ def write_page(cid=None):
     return render_template("write-page.html", form=form)
 
 
+# 管理页面
 @admin.route("/manage-pages")
 @admin.route("/manage-pages/page/<int:page>")
 @login_required
 def manage_pages(page=1):
     pages = Content.objects(type="page")[(page - 1) * 5: page * 5]
     pageinate = Content.objects.paginate(page=page, per_page=5)
-    createds = []
+    createds = []  # 格式化页面创建时间
     comment_num = []
     for page in pages:
         createds.append(page.created.strftime("%Y-%m-%d"))
@@ -156,6 +160,7 @@ def manage_pages(page=1):
                            comment_num=comment_num, current_user=current_user)
 
 
+# 删除页面
 @admin.route('/delete-pages', methods=["POST"])
 @login_required
 def delete_pages():
@@ -167,7 +172,7 @@ def delete_pages():
     return redirect(url_for('admin.manage_pages'))
 
 
-# 分类相关
+# 管理分类
 @admin.route("/manage-categories/")
 @admin.route("/manage-categories/page/<int:page>")
 @login_required
@@ -177,29 +182,33 @@ def manage_categories(page=1):
         categories = Category.objects.search_text(keyword)
     else:
         categories = Category.objects[(page - 1) * 5: page * 5]
-        pageinate = Category.objects.paginate(page=page, per_page=5)
+    pageinate = Category.objects.paginate(page=page, per_page=5)
     count = [Content.objects(category=category).count() for category in categories]
     return render_template("manage-categories.html", categories=categories, count=count, pageinate=pageinate,
                            current_user=current_user)
 
 
+# 新建分类
 @admin.route("/category", methods=["GET", "POST"])
+@admin.route("/category/cid/<cid>")
 @login_required
-def category():
-    cid = request.args.get("cid")
-
+def category(cid=None):
     if cid is not None:
-        categories = Category.objects(id=cid)
-        old_category = categories[0]
-        form = categoryForm(name=old_category.name, slug=old_category.slug, description=old_category.description)
-        return render_template("categories.html", form=form)
+        category = Category.objects(id=cid).first()
+        form = categoryForm(category)
+    else:
+        form = categoryForm()
 
-    form = categoryForm()
     if form.validate_on_submit():
-        categories = Category(name=form.name.data, slug=form.slug.data, description=form.description.data)
-        categories.save()
+        if form.category_id.data:
+            category = Category.objects(id=form.category_id.data).first()
+        else:
+            category = Category()
+        category.set_val(form)
+        category.save()
         flash(u"分类保存成功", "success")
         return redirect(url_for("admin.manage_categories"))
+
     return render_template("categories.html", form=form, current_user=current_user)
 
 
