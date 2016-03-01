@@ -20,8 +20,7 @@ class postForm(Form):
             self.title.data = content.title
             self.slug.data = content.slug
             self.content.data = content.md_text
-            self.category.default = content.category.slug
-            # fixme: 无法更改 default 的值
+            self.category.data = content.category.slug
             if len(content.tags) > 0:
                 self.tags.data = ",".join(content.tags)
 
