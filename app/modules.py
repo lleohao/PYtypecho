@@ -148,12 +148,21 @@ class Options(db.Document):
     """
     Options(site_url="lleohao.com", site_title="Lleohao's Blog", site_keyword="blog,python")
     """
-    site_url = db.StringField()
-    site_title = db.StringField()
+    site_url = db.StringField(required=True)
+    site_title = db.StringField(required=True)
     site_keyword = db.StringField()
     site_description = db.StringField()
+    site_duoshuo_name = db.StringField(default="")
 
+    # 做为自增长 id 用
+    # 暂不需要
     comment_index = db.IntField(default=0, required=True)
-    new_comment = db.ListField(db.ReferenceField(Content))
-
     content_index = db.IntField(default=0)
+
+    def set_and_save(self, form):
+        self.site_url = form.url.data
+        self.site_title = form.title.data
+        self.site_keyword = form.keyword.data
+        self.site_description = form.description.data
+        self.site_duoshuo_name = form.duoshuo_name.data
+        self.save()

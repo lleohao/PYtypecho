@@ -1,7 +1,7 @@
 {% extends "admin-base.html" %}
 
 {% block title %}
-基本设置
+    基本设置
 {% endblock %}
 
 {% block navbar %}
@@ -13,7 +13,7 @@
 {% endblock %}
 
 {% block main %}
-<div class="col-md-8 col-lg-offset-2">
-    {{ wtf.quick_form(form, button_map={"submit":"primary"}) }}
-</div>
+    <div class="col-md-8 col-lg-offset-2">
+        {{ wtf.quick_form(form, button_map={"submit":"primary"}, action=url_for('admin.options_general')) }}
+    </div>
 {% endblock %}

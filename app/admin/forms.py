@@ -97,4 +97,14 @@ class OptionGeneralForm(Form):
     url = URLField(u"网站地址", description=u"站点地址主要用于生成内容的永久链接.")
     description = StringField(u"网站描述", description=u"站点描述将显示在网页代码的头部.")
     keyword = StringField(u"关键字", description=u"请以半角逗号\",\"分割多个关键字.")
+    duoshuo_name = StringField(u"多说short_name", description=u"请填写你的多说short_name")
     submit = SubmitField(u"保存设置")
+
+    def __init__(self, option=None):
+        super(OptionGeneralForm, self).__init__()
+        if option:
+            self.title.data = option.site_title
+            self.url.data = option.site_url
+            self.keyword.data = option.site_keyword
+            self.description.data = option.site_description
+            self.duoshuo_name.data = option.site_duoshuo_name

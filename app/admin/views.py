@@ -16,8 +16,7 @@ from ..modules import Category, User, Options, Content
 def main():
     # 后台概要页面， 获取文章总数及网站设置内容
     post_nums = Content.objects(type="post").count()
-    site_option = Options.objects.first()
-    return render_template("main.html", post_nums=post_nums, site_option=site_option, current_user=current_user)
+    return render_template("main.html", post_nums=post_nums, current_user=current_user)
 
 
 # 编写、修改文章
@@ -284,18 +283,14 @@ def manage_comments():
 @admin.route('/options-general', methods=["GET", "POST"])
 @login_required
 def options_general():
-    op = Options.objects.first()
-    form = OptionGeneralForm(title=op.site_title,
-                             url=op.site_url,
-                             keyword=op.site_keyword,
-                             description=op.site_description)
+    if request.method == "GET":
+        option = Options.objects.first()
+        form = OptionGeneralForm(option)
+        return render_template("options-general.html", form=form, current_user=current_user)
 
+    form = OptionGeneralForm()
     if form.validate_on_submit():
-        op.site_url = form.url.data
-        op.site_title = form.title.data
-        op.site_keyword = form.keyword.data
-        op.site_description = form.description.data
-        op.save()
+        option = Options.objects.first()
+        option.set_and_save(form)
         flash(u"网站信息保存成功", "success")
         return redirect(url_for("admin.options_general"))
-    return render_template("options-general.html", form=form, current_user=current_user)
