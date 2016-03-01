@@ -81,6 +81,16 @@ class userForm(Form):
                         description=u"不同的用户组拥有不同的权限.<br>具体的权限分配表请<a href=\"#\">参考这里</a>.")
     submit = SubmitField(u"新增用户")
 
+    def __init__(self, user=None):
+        super(userForm, self).__init__()
+        if user:
+            self.user_id.data = user.id
+            self.username.data = user.username
+            self.email.data = user.email
+            self.screenName.data = user.screenName
+            self.url.data = user.url
+            self.group.data = user.group
+
 
 class OptionGeneralForm(Form):
     title = StringField(u"网站标题", description=u"站点的名称将显示在网页的标题处.")

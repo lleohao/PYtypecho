@@ -46,6 +46,15 @@ class User(UserMixin, db.Document):
     def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
 
+    def set_and_save(self, form):
+        self.username = form.username.data
+        self.email = form.email.data
+        self.password = form.password.data
+        self.url = form.url.data
+        self.screenName = form.screenName.data
+        self.group = form.group.data
+        self.save()
+
 
 @login_manager.user_loader
 def user_load(user_id):

@@ -212,6 +212,7 @@ def category(cid=None):
     return render_template("categories.html", form=form, current_user=current_user)
 
 
+# 删除分类
 @admin.route("/delete-categories", methods=["POST"])
 @login_required
 def delete_categories():
@@ -223,40 +224,29 @@ def delete_categories():
     return redirect(url_for('admin.manage_categories'))
 
 
-# 用户相关
+# 新增用户
 @admin.route("/users", methods=["GET", "POST"])
 @admin.route("/users/cid/<cid>")
 @login_required
 def users(cid=None):
-    form = userForm()
     if cid:
         change_user = User.objects(id=cid).first()
-        form.user_id.data = cid
-        form.username.data = change_user.username
-        form.email.data = change_user.email
-        form.screenName.data = change_user.screenName
-        form.url.data = change_user.url
-        form.group.data = change_user.group
+        form = userForm(change_user)
+    else:
+        form = userForm()
 
     if form.validate_on_submit():
         if form.user_id.data:
             user = User.objects(id=form.user_id.data).first()
-            user.username = form.username.data
-            user.email = form.email.data
-            user.password = form.password.data
-            user.url = form.url.data
-            user.screenName = form.screenName.data
-            user.group = form.group.data
-            user.save()
         else:
-            user = User(username=form.username.data, password=form.password.data, email=form.email.data,
-                        url=form.url.data, screenName=form.screenName.data, group=form.group.data)
-            user.save()
+            user = User()
+        user.set_and_save(form)
         flash(u"用户添加成功", "success")
         return redirect(url_for("admin.manage_users"))
     return render_template("users.html", form=form, current_user=current_user)
 
 
+# 管理用户
 @admin.route("/manage-users", methods=["GET", "POST"])
 @admin.route("/manage-users/page/<page>")
 @login_required
@@ -266,6 +256,7 @@ def manage_users(page=1):
     return render_template("manage-users.html", users=users, pageinate=pageinate, current_user=current_user)
 
 
+# 删除用户
 @admin.route("/delete-users", methods=["GET", "POST"])
 @login_required
 def delete_users():
@@ -281,12 +272,15 @@ def delete_users():
     return redirect(url_for('admin.manage_users'))
 
 
+# 管理评论
+# todo： 下个版本加上
 @admin.route("/manage-comments")
 @login_required
 def manage_comments():
     return "pass"
 
 
+# 网站信息管理
 @admin.route('/options-general', methods=["GET", "POST"])
 @login_required
 def options_general():
