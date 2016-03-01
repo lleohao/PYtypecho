@@ -45,47 +45,32 @@
 </div>
 <!-- header 结束 -->
 
-<!-- 主题内容 -->
+<!--archive-->
 <div class="content">
     <div class="container">
-        <!-- 文章概述区 -->
+        <div class="entry arthive">
+            <div class="entry-left">
+                <h2 class="entry-title">
+                    <!--分类 "%s" 下的文章-->
+                    <!--包含关键字 "%s" 的文章-->
+                    <!--标签 "%s" 下的文章-->
+                    <!--"%s" 发布的文章-->
+                    归档标题
+                </h2>
+            </div>
+        </div>
+
         <div class="entry">
             <div class="entry-left">
                 <h1 class="entry-title">
                     <a itemtype="url" href="#">文章标题</a>
                 </h1>
                 <div class="entry-meta" itemprop="keywords">
-                    <span>by <a href="#">作者</a> · 关键字</span> · <a href="#">分类</a>
+                    <span>by <a href="#">作者</a> · 2016-2-26</span> · <a href="#">分类</a>
                 </div>
             </div>
             <div class="entry-content">
-                <p>概述内容</p>
-                <pre><code class="language-sh"> +--------------+ +---------------+ +---------------+
-                    | | | | | |
-                    | Get UUID | | Get Contact | | Status Notify |
-                    | | | | | |
-                    +-------+------+ +-------^-------+ +-------^-------+
-                    | | |
-                    | +-------+ +--------+
-                    | | |
-                    +-------v------+ +-----+--+------+ +--------------+
-                    | | | | | |
-                    | Get QRCode | | Weixin Init +------&gt; Sync Check &lt;----+
-                    | | | | | | |
-                    +-------+------+ +-------^-------+ +-------+------+ |
-                    | | | |
-                    | | +-----------+
-                    | | |
-                    +-------v------+ +-------+--------+ +-------v-------+
-                    | | Confirm Login | | | |
-                    +------&gt; Login +---------------&gt; New Login Page | | Weixin Sync |
-                    | | | | | | |
-                    | +------+-------+ +----------------+ +---------------+
-                    | |
-                    |QRCode Scaned|
-                    +-------------+
-                </code></pre>
-                <p><img src="img/bg.png" alt="bg"></p>
+                <p>内容</p>
             </div>
             <div class="post-tags">
                 <a href="#">标签</a>
@@ -95,41 +80,15 @@
             </div>
             <div class="clearfix"></div>
         </div>
-        <!-- 文章概述区 结束 -->
 
-        <!-- 文章概述区 -->
-        <div class="entry">
-            <div class="entry-left">
-                <h1 class="entry-title">
-                    <a itemtype="url" href="#">文章标题</a>
-                </h1>
-                <div class="entry-meta" itemprop="keywords">
-                    <span>by <a href="#">作者</a> · 关键字</span> · <a href="#">分类</a>
-                </div>
-            </div>
-            <div class="entry-content">
-                <p>概述内容</p>
-            </div>
-            <div class="post-tags">
-                <a href="#">标签</a>
-            </div>
-            <div class="more">
-                <a class="btn" href="#">阅读全文 »</a>
-            </div>
-            <div class="clearfix"></div>
-        </div>
-        <!-- 文章概述区 结束 -->
-
-        <!-- 分页 -->
         <div class="pagination" role="pagination">
             <a href="#" class="prev">&lt;</a>
             <a href="#" class="next">&gt;</a>
             <div class="clearfix"></div>
         </div>
-        <!-- 分页结束 -->
     </div>
 </div>
-<!-- 主题内容 结束 -->
+<!--archive 结束-->
 
 <!-- footer -->
 <script type="text/javascript">
