@@ -109,6 +109,7 @@ class Content(db.DynamicDocument):
     tags = db.ListField(db.StringField())
     md_text = db.StringField()
     html_text = db.StringField()
+    description = db.StringField()
     status = db.BooleanField(default=False)
     type = db.StringField(choices=["post", "page"])
     comments = db.ListField(db.EmbeddedDocumentField(Comment))
@@ -140,19 +141,18 @@ class Content(db.DynamicDocument):
 
 
     def clean(self):
+        op = Options.objects().first()
         self.html_text = Markup(markdown(self.md_text))
+        self.description = op.site_title + " - " + op.site_description + " - " + self.md_text[0:150]
 
 
 # 网站设置属性数据模型
 class Options(db.Document):
-    """
-    Options(site_url="lleohao.com", site_title="Lleohao's Blog", site_keyword="blog,python")
-    """
-    site_url = db.StringField(required=True)
-    site_title = db.StringField(required=True)
-    site_keyword = db.StringField()
-    site_description = db.StringField()
-    site_duoshuo_name = db.StringField(default="")
+    url = db.StringField(required=True)
+    title = db.StringField(required=True)
+    keyword = db.StringField()
+    description = db.StringField()
+    duoshuo_name = db.StringField(default="")
 
     # 做为自增长 id 用
     # 暂不需要
@@ -160,9 +160,9 @@ class Options(db.Document):
     content_index = db.IntField(default=0)
 
     def set_and_save(self, form):
-        self.site_url = form.url.data
-        self.site_title = form.title.data
-        self.site_keyword = form.keyword.data
-        self.site_description = form.description.data
-        self.site_duoshuo_name = form.duoshuo_name.data
+        self.url = form.url.data
+        self.title = form.title.data
+        self.keyword = form.keyword.data
+        self.description = form.description.data
+        self.duoshuo_name = form.duoshuo_name.data
         self.save()

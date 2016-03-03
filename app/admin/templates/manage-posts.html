@@ -72,7 +72,9 @@
                                     [草稿]
                                 {% endif %}
                                 {{ post.title }}&nbsp;</a>
-                            <a href="{{ url_for('ui.show_aticle', slug=post.slug) }}" target="_blank" title="浏览 {{ post.title }}"><i class="glyphicon glyphicon-new-window"></i></a>
+                            {# todo: 前台页面完成后添加 #}
+                            <a href="#" target="_blank" title="浏览 {{ post.title }}"><i
+                                    class="glyphicon glyphicon-new-window"></i></a>
                         </td>
                         <td>{{ post.category.name }}</td>
                         <td>
