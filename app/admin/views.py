@@ -4,6 +4,7 @@ from datetime import datetime
 
 from flask import render_template, redirect, flash, request, url_for, session
 from flask.ext.login import login_required, current_user
+from mongoengine import NotUniqueError
 
 from . import admin
 from .forms import postForm, pageForm, categoryForm, userForm, OptionGeneralForm
@@ -50,16 +51,24 @@ def write_post(cid=None):
             post = Content.objects(id=form.content_id.data).first()
         else:
             post = Content(type="post")
-        post.set_val(form, "post")
+        post.set_val(form, session["username"], "post")
 
         if request.form["submit"] == "save":
             post.status = False
-            post.save()
+            try:
+                post.save()
+            except NotUniqueError:
+                flash(u"slug 已存在，请修改后再保存", "warning")
+                return render_template("write-post.html", form=form, current_user=current_user)
             flash(u"保存草稿成功", "success")
             return redirect(url_for("admin.write_post", cid=post.id))
         else:
             post.status = True
-            post.save()
+            try:
+                post.save()
+            except NotUniqueError:
+                flash(u"slug 已存在，请更改在发布", "warning")
+                return render_template("write-post.html", form=form, current_user=current_user)
             flash(u"发布文章成功", "success")
             return redirect(url_for("admin.manage_posts"))
 
@@ -79,7 +88,7 @@ def manage_posts(page=1):
     else:
         posts = Content.objects(type="post")[(page - 1) * 5: page * 5]
 
-    pageinate = Content.objects.paginate(page=page, per_page=5)
+    pageinate = Content.objects(type="post").paginate(page=page, per_page=5)
     categories = Category.objects()
     createds = []
     delays = []  # 格式化文章发布时间
@@ -128,16 +137,24 @@ def write_page(cid=None):
             page = Content.objects(id=form.content_id.data).first()
         else:
             page = Content(type="page")
-        page.set_val(form, "page")
+        page.set_val(form, session["username"], "page")
 
         if request.form["submit"] == "save":
             page.status = False
-            page.save()
+            try:
+                page.save()
+            except NotUniqueError:
+                flash(u"slug 已存在，请修改后再保存", "warning")
+                return render_template("write-page.html", form=form)
             flash(u"保存草稿成功", "success")
             return redirect(url_for("admin.write_page", cid=page.id))
         else:
             page.status = True
-            page.save()
+            try:
+                page.save()
+            except NotUniqueError:
+                flash(u"slug 已存在，请修改后再发布", "warning")
+                return render_template("write-page.html", form=form)
             flash(u"发布页面成功", "success")
             return redirect(url_for("admin.manage_pages"))
     return render_template("write-page.html", form=form)
@@ -149,7 +166,7 @@ def write_page(cid=None):
 @login_required
 def manage_pages(page=1):
     pages = Content.objects(type="page")[(page - 1) * 5: page * 5]
-    pageinate = Content.objects.paginate(page=page, per_page=5)
+    pageinate = Content.objects(type="page").paginate(page=page, per_page=5)
     createds = []  # 格式化页面创建时间
     comment_num = []
     for page in pages:

@@ -103,8 +103,8 @@ class OptionGeneralForm(Form):
     def __init__(self, option=None):
         super(OptionGeneralForm, self).__init__()
         if option:
-            self.title.data = option.site_title
-            self.url.data = option.site_url
-            self.keyword.data = option.site_keyword
-            self.description.data = option.site_description
-            self.duoshuo_name.data = option.site_duoshuo_name
+            self.title.data = option.title
+            self.url.data = option.url
+            self.keyword.data = option.keyword
+            self.description.data = option.description
+            self.duoshuo_name.data = option.duoshuo_name

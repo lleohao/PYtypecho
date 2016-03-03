@@ -110,6 +110,7 @@ class Content(db.DynamicDocument):
     md_text = db.StringField()
     html_text = db.StringField()
     description = db.StringField()
+    author = db.StringField()
     status = db.BooleanField(default=False)
     type = db.StringField(choices=["post", "page"])
     comments = db.ListField(db.EmbeddedDocumentField(Comment))
@@ -124,11 +125,12 @@ class Content(db.DynamicDocument):
         ]
     }
 
-    def set_val(self, form, type):
+    def set_val(self, form, author, type):
         self.created = datetime.now()
         self.title = form.title.data
         self.slug = create_only_slug(form)
         self.md_text = form.content.data
+        self.author = author
         if type == 'post':
             if form.tags.data is not "":
                 self.tags = form.tags.data.split(",")
@@ -139,11 +141,10 @@ class Content(db.DynamicDocument):
             self.tags = None
             self.category = None
 
-
     def clean(self):
         op = Options.objects().first()
-        self.html_text = Markup(markdown(self.md_text))
-        self.description = op.site_title + " - " + op.site_description + " - " + self.md_text[0:150]
+        self.html_text = Markup(markdown(self.md_text, ['markdown.extensions.extra']))
+        self.description = op.title + " - " + op.description + " - " + self.md_text[0:150]
 
 
 # 网站设置属性数据模型
