@@ -43,7 +43,7 @@
                     <a href="{{ url_for('ui.show_category', slug=slug, page=pagination.prev_num) }}" class="prev">
                         &lt;</a>
                 {% endif %}
-                {% if pagination.page != pagination.pages %}
+                {% if pagination.page != pagination.pages and pagination.pages != 0%}
                     <a href="{{ url_for('ui.show_category', slug=slug,page=pagination.next_num) }}" class="next">
                         &gt;</a>
                 {% endif %}

@@ -37,7 +37,7 @@
                 {% if pagination.prev_num != 0 %}
                     <a href="{{ url_for('ui.index', page=pagination.prev_num) }}" class="prev">&lt;</a>
                 {% endif %}
-                {% if pagination.page != pagination.pages %}
+                {% if pagination.page != pagination.pages and pagination.pages != 0 %}
                     <a href="{{ url_for('ui.index', page=pagination.next_num) }}" class="next">&gt;</a>
                 {% endif %}
                 <div class="clearfix"></div>

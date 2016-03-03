@@ -11,6 +11,8 @@
         {%- endblock metas %}
 
         {%- block styles %}
+            <link rel="Shortcut Icon" href="{{- url_for('static', filename='img/favicon.ico') -}}"/>
+            <link rel="Bootmark" href="{{- url_for('static', filename='img/logo.jpg') -}}"/>
             <link href="{{ bootstrap_find_resource('css/bootstrap.css', cdn='bootstrap') }}" rel="stylesheet">
             <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
         {%- endblock styles %}
@@ -47,7 +49,6 @@
         {% block scripts %}
             <script src="{{ bootstrap_find_resource('jquery.js', cdn='jquery') }}"></script>
             <script src="{{ bootstrap_find_resource('js/bootstrap.js', cdn='bootstrap') }}"></script>
-            <script src="{{ url_for('static', filename='js/js.js') }}"></script>
         {%- endblock scripts %}
     </body>
     {%- endblock body %}
