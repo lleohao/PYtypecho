@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block main %}
+    <!-- page -->
+    <div class="content">
+        <div class="container">
+            <div class="entry archive_list">
+                <h1 class="entry-title">
+                    <a itemtype="url" href="{{ url_for('ui.show_page', slug='page.slug') }}">{{ page.title }}</a>
+                </h1>
+                <div class="post-content" itemprop="articleBody">
+                    {{ page.html_text | safe }}
+                </div>
+            </div>
+            <!-- share -->
+
+            <!--评论区-->
+            <div id="comments">
+                <!-- 多说评论框 start -->
+                <div class="ds-thread" data-thread-key="{{ page.id }}" data-title="{{ page.title }}"
+                     data-url="{{ site.url }}/{{ page.slug }}"></div>
+                <!-- 多说评论框 end -->
+                <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+                <script type="text/javascript">
+                    var duoshuoQuery = {short_name: "{{ site.duoshuo_name }}"};
+                    (function () {
+                        var ds = document.createElement('script');
+                        ds.type = 'text/javascript';
+                        ds.async = true;
+                        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+                        ds.charset = 'UTF-8';
+                        (document.getElementsByTagName('head')[0]
+                        || document.getElementsByTagName('body')[0]).appendChild(ds);
+                    })();
+                </script>
+                <!-- 多说公共JS代码 end -->
+                <!--<h4><?php _e('评论已关闭'); ?></h4>-->
+            </div>
+            <!--评论区结束-->
+        </div>
+    </div>
+    <!-- page 结束 -->
+{% endblock %}
+

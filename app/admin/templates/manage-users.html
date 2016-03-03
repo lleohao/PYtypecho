@@ -4,7 +4,7 @@
 {% endblock %}
 
 {% block navbar %}
-    {{ widget.admin_nav(is_manage="active") }}
+    {{ widget.admin_nav(is_manage="active", current_user=current_user) }}
 {% endblock %}
 
 {% block page_title %}
@@ -27,12 +27,6 @@
                     <ul class="dropdown-menu">
                         <li><a href="#" class="delete">删除</a></li>
                     </ul>
-                </div>
-            </div>
-            <div class="search pull-right">
-                <div class="form-group">
-                    <input class="form-control" type="text" name="keyword" placeholder="请输入关键字">
-                    <button class="btn btn-default" type="submit">筛选</button>
                 </div>
             </div>
         </form>

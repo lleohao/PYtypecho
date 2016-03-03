@@ -3,14 +3,13 @@
 {% block styles %}
     {{ super() }}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/editormd.min.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/tags.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='framework/editormd/css/editormd.min.css') }}">
 {% endblock %}
 
 {% block title %}添加文章{% endblock %}
 
 {% block navbar %}
-    {{ widget.admin_nav(is_write="active") }}
+    {{ widget.admin_nav(is_write="active", current_user=current_user) }}
 {% endblock %}
 
 {% block page_title %}
@@ -62,10 +61,9 @@
 
 {% block scripts %}
     {{ super() }}
-    <script src="{{ url_for('static', filename='js/editormd.min.js' )}}"></script>
+    <script src="{{ url_for('static', filename='framework/editormd/editormd.min.js' )}}"></script>
     <script>
-        var testEditor,
-            csrftoken = "{{ csrf_token() }}";
+        var testEditor;
 
         $(function() {
             testEditor = editormd("edit-area", {
@@ -76,7 +74,7 @@
                 codeFold: true,
                 emoji: true,
                 toolbarAutoFixed: false,
-                path: "{{ url_for('static', filename='lib/') }}",
+                path: "{{ url_for('static', filename='framework/editormd/lib/') }}",
                 toolbarIcons: function(){
                     return ["undo", "redo", "|",
                             "bold", "del", "italic", "quote", "|",

@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+    {% block head %}
+        <meta charset="UTF-8">
+        {% block meta %}{% endblock %}
+        <title>{% block title %}{% endblock %}</title>
+        {% block styles %}
+            <link rel="stylesheet" href="{{ url_for('static', filename='css/reset.css') }}">
+            <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+            <link rel="stylesheet" href="{{ url_for('static',filename='css/editormd.preview.min.css')}}">
+        {% endblock %}
+    {% endblock %}
+</head>
+<body>
+    <div id="container" class="container">
+        <header role="banner" class="site-header">
+            <hgroup>
+                <h1 class="site-title">{% block site_title %}{% endblock %}</h1>
+                <h2 class="site-description">{% block site_description %}{% endblock %}</h2>
+            </hgroup>
+            <nav role="navigation" class="nav">
+                <ul class="nav-menu">
+                    <li class="menu-item"><a href="/">首页</a></li>
+                    {% block page_link %}{% endblock %}
+                </ul>
+            </nav>
+        </header>
+
+        <div id="main" class="clear-fix site-main">
+            <div id="content" class="page-content">
+                {% block article %}{% endblock %}
+                {% block nav_page %}{% endblock %}
+            </div>
+
+            <div id="aside" class="aside-area" role="complementary">
+                <!--<aside id="search" class="widget widget-search">
+                    <form action="#" role="search" method="get" id="searchform">
+                        <div>
+                            <label for="keyword" class="sr-only">搜索：</label>
+                            <input type="text" name="keyword" id="bdcsMain" placeholder="输入关键字">
+                            <input type="submit" id="searchsubmit" value="搜索">
+                        </div>
+                    </form>
+                </aside>-->
+                <aside id="category" class="widget widget-category">
+                    <h3 class="widget-title">分类目录</h3>
+                    <ul>
+                    {% block category %}{% endblock %}
+                    </ul>
+                </aside>
+                <aside id="operate" class="widget widget-operate">
+                    <h3 class="widget-title">用户操作</h3>
+                    <ul>
+                        {% if session['username'] %}
+{#                            todo: 待修复#}
+                            <li class="opt-item"><a href="{{ url_for('admin.main') }}">{{ session['username'] }}</a></li>
+                        {% else %}
+                            <li class="opt-item"><a href="{{ url_for('auth.login') }}">登录</a></li>
+                        {% endif %}
+                    </ul>
+                </aside>
+            </div>
+        </div>
+
+        <footer role="contentinfo">
+            <div class="site-info">
+                <a href="/">Lleohao's blog</a>
+                &copy;2015
+                <br>
+                Power by Python, MongoDb
+            </div>
+            {% block site_info %}{% endblock %}
+        </footer>
+    </div>
+    {% block scripts %}
+        <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='lib/marked.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='lib/prettify.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='lib/raphael.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='lib/underscore.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='lib/sequence-diagram.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='lib/flowchart.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='lib/jquery.flowchart.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/editormd.min.js') }} "></script>
+    {% endblock %}
+</body>
+</html>

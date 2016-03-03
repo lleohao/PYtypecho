@@ -2,7 +2,6 @@
 from flask.ext.wtf import Form
 from wtforms import StringField, SubmitField, PasswordField, BooleanField
 from wtforms.validators import InputRequired
-from ..modules import User
 
 
 class LoginForm(Form):

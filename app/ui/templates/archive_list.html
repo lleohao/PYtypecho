@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block main %}
+<!--archive_list-->
+<div class="content">
+    <div class="container">
+        <div class="entry archive_list">
+            <h1 class="entry-title">
+                <a itemtype="url" href="{{ url_for('ui.show_archive_list') }}">归档文章</a>
+            </h1>
+            {% for post in posts %}
+            <div class="post-content pl18" itemprop="articleBody">
+                <li><i>{{ created_time[loop.index0] }}</i> : <a
+                        href="{{ url_for('ui.show_post', slug=post.slug) }}">{{ post.title }}</a></li>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<!--archive_list结束-->
+{% endblock %}

@@ -3,7 +3,7 @@
 
 
 {% block  navbar %}
-    {{ widget.admin_nav(is_manage="active") }}
+    {{ widget.admin_nav(is_manage="active", current_user=current_user) }}
 {% endblock %}
 
 {% block page_title %}
@@ -29,7 +29,8 @@
             </div>
             <div class="search pull-right">
                 <div class="form-group">
-                    <input type="text" class="form-control" name="keyword" placeholder="请输入关键字">
+                    <input type="text" class="form-control" name="keyword" placeholder="请输入关键字"
+                           title="由于mongodb限制，模糊搜索功能可能会出现bug">
                     <button class="btn btn-default" type="submit">筛选</button>
                 </div>
             </div>
@@ -61,12 +62,13 @@
                         <tr>
                             <td><input type="checkbox" name="cid" value="{{ category.id }}"></td>
                             <td>
-                                <a href="{{ url_for('admin.category', cid=category.id) }}">{{ category.name }}</a>
+                                <a href="{{ url_for('admin.category') }}/cid/{{ category.id }}">{{ category.name }}</a>
                                 <a href="{{ url_for('ui.show_category', slug=category.slug) }}" title="浏览 {{ category.name }}" target="_blank"><i class="glyphicon glyphicon-new-window"></i></a>
                             </td>
                             <td>{{ category.slug }}</td>
                             <td>{{ category.description }}</td>
-                            <td><a href="#" class="badge">{{ count[loop.index0] }}</a></td>
+                            <td><a href="{{ url_for('admin.manage_posts') }}?category={{ category.name }}"
+                                   class="badge">{{ count[loop.index0] }}</a></td>
                         </tr>
                     {% endfor %}
                 </tbody>

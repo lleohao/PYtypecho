@@ -3,7 +3,7 @@
 {% block title %}管理文章{% endblock %}
 
 {% block navbar %}
-    {{ widget.admin_nav(is_manage="active") }}
+    {{ widget.admin_nav(is_manage="active", current_user=current_user) }}
 {% endblock %}
 
 {% block page_title %}
@@ -72,7 +72,9 @@
                                     [草稿]
                                 {% endif %}
                                 {{ post.title }}&nbsp;</a>
-                            <a href="{{ url_for('ui.show_aticle', slug=post.slug) }}" target="_blank" title="浏览 {{ post.title }}"><i class="glyphicon glyphicon-new-window"></i></a>
+                            <a href="{{ url_for('ui.show_post', slug=post.slug) }}" target="_blank"
+                               title="浏览 {{ post.title }}"><i
+                                    class="glyphicon glyphicon-new-window"></i></a>
                         </td>
                         <td>{{ post.category.name }}</td>
                         <td>

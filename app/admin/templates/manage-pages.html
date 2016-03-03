@@ -3,7 +3,7 @@
 {% block title %}管理页面{% endblock %}
 
 {% block navbar %}
-    {{ widget.admin_nav(is_manage="active") }}
+    {{ widget.admin_nav(is_manage="active", current_user=current_user) }}
 {% endblock %}
 
 {% block page_title %}
@@ -66,7 +66,8 @@
                                     [草稿]
                                 {% endif %}
                                 {{ page.title }}</a>
-                            <a href="{{ url_for('ui.show_category', slug=page.slug) }}" title="浏览{{ page.title }}" target="_blank"><i class="glyphicon glyphicon-new-window"></i></a>
+                            <a href="{{ url_for('ui.show_page', slug=page.slug) }}" title="浏览{{ page.title }}"
+                               target="_blank"><i class="glyphicon glyphicon-new-window"></i></a>
                         </td>
                         <td>{{ page.slug }}</td>
                         <td>{{ createds[loop.index0] }}</td>

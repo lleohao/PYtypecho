@@ -1,99 +1,97 @@
 # coding: utf-8
 import math
 from datetime import datetime
+
 from flask import render_template, redirect, flash, request, url_for, session
-from flask.ext.login import login_required
+from flask.ext.login import login_required, current_user
+from mongoengine import NotUniqueError
+
 from . import admin
-from .forms import ContentForm, categoryForm, userForm, OptionGeneralForm
-from ..modules import Content, Category, User, Options
+from .forms import postForm, pageForm, categoryForm, userForm, OptionGeneralForm
+from ..modules import Category, User, Options, Content
 
 
 @admin.route("/")
 @admin.route("/main")
 @login_required
 def main():
-    page_num = Content.objects(type="post").count()
-    op = Options.objects.first()
-    return render_template("main.html", page_num=page_num, op=op)
+    # 后台概要页面， 获取文章总数及网站设置内容
+    post_nums = Content.objects(type="post").count()
+    return render_template("main.html", post_nums=post_nums, current_user=current_user)
 
 
-# 文章相关内容
+# 编写、修改文章
+@admin.route("/write-post/cid/<cid>")
 @admin.route("/write-post/", methods=["GET", "POST"])
-@admin.route("/write-post/<cid>")
 @login_required
 def write_post(cid=None):
-    form = ContentForm()
+    # url_for("admin.write_post", cid=post.id) ==> url?cid=56d30e9117a6030e248d007a
+    # 为了兼容只能这么处理
+    if request.args.get("cid"):
+        cid = request.args.get("cid")
+
+    # 创建 form 表单内容
+    if cid:
+        # 存在 cid 说明是在修改文章，将文章内容绑定到 form 表单中
+        post = Content.objects(id=cid).first()
+        form = postForm(post)
+    else:
+        # 不存在则设置默认样式
+        form = postForm()
+    # 为 category 表单赋值选择项
     categories = Category.objects()
     form.category.choices = [(cat.slug, cat.name) for cat in categories]
-    if cid:
-        content = Content.objects(id=cid).first()
-        form.title.data = content.title
-        form.slug.data = content.slug
-        form.content.data = content.text
-        category = content.category.name
-        form.tags.data = str(content.tags).join(",")
-        form.content_id.data = cid
-    else:
-        pass
 
-
+    # 处理保存草稿及发布文章
     if form.validate_on_submit():
-        content_id = form.content_id.data
-        title = form.title.data
-        slug = form.slug.data
-        text = form.content.data
-        tags = form.tags.data.split(",")
-        category = Category.objects(slug=form.category.data).first()
-
-        if content_id:
-            post = Content.objects(id=content_id).first()
-            post.title = title
-            post.slug = slug
-            post.text = text
-            post.tags = tags
-            post.category = category
+        # 根据表单提交的 content_id 判断是否新建或者是修改文章
+        # 这里再次判断是否是修改文章的原因是 form 表单提交的地址 cid 永远为 None
+        # 所以无法通过 cid 来判断是否是修改文章
+        if form.content_id.data:
+            post = Content.objects(id=form.content_id.data).first()
         else:
-            post = Content(title=title, slug=slug, text=text, tags=tags, category=category, type="post")
+            post = Content(type="post")
+        post.set_val(form, session["username"], "post")
 
         if request.form["submit"] == "save":
             post.status = False
-            post.save()
-            form.content_id.data = post.id
-            if slug == "":
-                post.slug = str(post.id)
-                form.slug.data = str(post.id)
+            try:
                 post.save()
+            except NotUniqueError:
+                flash(u"slug 已存在，请修改后再保存", "warning")
+                return render_template("write-post.html", form=form, current_user=current_user)
             flash(u"保存草稿成功", "success")
-            # FIXME: 这样会存在刷新多次提交的问题，后期需要改进
-            return render_template("write-post.html", form=form)
+            return redirect(url_for("admin.write_post", cid=post.id))
         else:
             post.status = True
-            post.save()
-            form.content_id.data = post.id
-            if slug == "":
-                post.slug = str(post.id)
-                form.slug.data = str(post.id)
+            try:
                 post.save()
+            except NotUniqueError:
+                flash(u"slug 已存在，请更改在发布", "warning")
+                return render_template("write-post.html", form=form, current_user=current_user)
             flash(u"发布文章成功", "success")
             return redirect(url_for("admin.manage_posts"))
-    return render_template("write-post.html", form=form, categories=categories)
+
+    return render_template("write-post.html", form=form, current_user=current_user)
 
 
+# 管理文章
 @admin.route("/manage-posts")
-@admin.route("/manage-categories/page/<int:page>")
+@admin.route("/manage-posts/page/<int:page>")
 @login_required
 def manage_posts(page=1):
-    cat = request.args.get("category")
-    if cat:
-        cat = Category.objects(name=cat).first()
-        posts = Content.objects(type="post", category=cat)[(page-1)*5: page*5]
+    # 存在 category 参数说明是在按照分类筛选文章
+    category_name = request.args.get("category")
+    if category_name:
+        category_name = Category.objects(name=category_name).first()
+        posts = Content.objects(type="post", category=category_name)[(page - 1) * 5: page * 5]
     else:
-        posts = Content.objects(type="post")[(page-1)*5: page*5]
+        posts = Content.objects(type="post")[(page - 1) * 5: page * 5]
 
-    pageinate = Content.objects.paginate(page=page, per_page=5)
+    pageinate = Content.objects(type="post").paginate(page=page, per_page=5)
     categories = Category.objects()
     createds = []
-    delays = []
+    delays = []  # 格式化文章发布时间
     comment_count = []
     for post in posts:
         createds.append(post.created.strftime("%Y-%m-%d"))
@@ -102,9 +100,10 @@ def manage_posts(page=1):
         comment_count.append(len(post.comments))
     return render_template("manage-posts.html", posts=posts, categories=categories,
                            delays=delays, createds=createds, comment_count=comment_count,
-                           pageinate=pageinate)
+                           pageinate=pageinate, current_user=current_user)
 
 
+# 删除文章
 @admin.route("/delete-posts", methods=["POST"])
 @login_required
 def delete_posts():
@@ -116,73 +115,68 @@ def delete_posts():
     return redirect(url_for('admin.manage_posts'))
 
 
-# 页面相关内容
+# 编写、修改页面
 @admin.route("/write-page", methods=["GET", "POST"])
-@admin.route("/write-page/<cid>/")
+@admin.route("/write-page/cid/<cid>")
 @login_required
 def write_page(cid=None):
-    form = ContentForm()
+    # 兼容性写法
+    if request.args.get("cid"):
+        cid = request.args.get("cid")
+
+    # 创建 form 表单内容
     if cid:
-        content = Content.objects(id=cid).first()
-        form.title.data = content.title
-        form.slug.data = content.slug
-        form.content.data = content.text
-        form.content_id.data = content.id
+        # 存在 cid 说明是在修改页面，将文章内容绑定到 form 表单中
+        page = Content.objects(id=cid).first()
+        form = pageForm(page)
     else:
-        pass
+        form = pageForm()
 
     if form.validate_on_submit():
-        content_id = form.content_id.data
-        title = form.title.data
-        slug = form.slug.data
-        text = form.content.data
-
-        if content_id:
-            page = Content.objects(id=content_id).first()
-            page.title = title
-            page.slug = slug
-            page.text = text
+        if form.content_id.data:
+            page = Content.objects(id=form.content_id.data).first()
         else:
-            page = Content(title=title, slug=slug, text=text, type="page")
+            page = Content(type="page")
+        page.set_val(form, session["username"], "page")
 
         if request.form["submit"] == "save":
             page.status = False
-            page.save()
-            form.content_id.data = page.id
-            if slug == "":
-                page.slug = str(page.id)
-                form.slug.data = str(page.id)
+            try:
                 page.save()
+            except NotUniqueError:
+                flash(u"slug 已存在，请修改后再保存", "warning")
+                return render_template("write-page.html", form=form)
             flash(u"保存草稿成功", "success")
-            # FIXME: 这样会存在刷新多次提交的问题，后期需要改进
-            return render_template("write-page.html", form=form)
+            return redirect(url_for("admin.write_page", cid=page.id))
         else:
             page.status = True
-            page.save()
-            form.content_id.data = page.id
-            if slug == "":
-                page.slug = str(page.id)
-                form.slug.data = str(page.id)
+            try:
                 page.save()
-            flash(u"发布文章成功", "success")
+            except NotUniqueError:
+                flash(u"slug 已存在，请修改后再发布", "warning")
+                return render_template("write-page.html", form=form)
+            flash(u"发布页面成功", "success")
             return redirect(url_for("admin.manage_pages"))
     return render_template("write-page.html", form=form)
 
 
+# 管理页面
 @admin.route("/manage-pages")
-@admin.route("/manage-pages/page/<page>")
+@admin.route("/manage-pages/page/<int:page>")
 @login_required
 def manage_pages(page=1):
-    pages = Content.objects(type="page")[(page-1)*5: page*5]
-    pageinate = Category.objects.paginate(page=page, per_page=5)
-    createds = []
+    pages = Content.objects(type="page")[(page - 1) * 5: page * 5]
+    pageinate = Content.objects(type="page").paginate(page=page, per_page=5)
+    createds = []  # 格式化页面创建时间
     comment_num = []
     for page in pages:
         createds.append(page.created.strftime("%Y-%m-%d"))
         comment_num.append(len(page.comments))
-    return render_template("manage-pages.html", pages=pages, pageinate=pageinate, createds=createds, comment_num=comment_num)
+    return render_template("manage-pages.html", pages=pages, pageinate=pageinate, createds=createds,
+                           comment_num=comment_num, current_user=current_user)
 
 
+# 删除页面
 @admin.route('/delete-pages', methods=["POST"])
 @login_required
 def delete_pages():
@@ -194,7 +188,7 @@ def delete_pages():
     return redirect(url_for('admin.manage_pages'))
 
 
-# 分类相关
+# 管理分类
 @admin.route("/manage-categories/")
 @admin.route("/manage-categories/page/<int:page>")
 @login_required
@@ -203,32 +197,38 @@ def manage_categories(page=1):
     if keyword:
         categories = Category.objects.search_text(keyword)
     else:
-        categories = Category.objects[(page-1)*5: page*5]
-        pageinate = Category.objects.paginate(page=page, per_page=5)
+        categories = Category.objects[(page - 1) * 5: page * 5]
+    pageinate = Category.objects.paginate(page=page, per_page=5)
     count = [Content.objects(category=category).count() for category in categories]
-    return render_template("manage-categories.html", categories=categories, count=count, pageinate=pageinate)
+    return render_template("manage-categories.html", categories=categories, count=count, pageinate=pageinate,
+                           current_user=current_user)
 
 
+# 新建分类
 @admin.route("/category", methods=["GET", "POST"])
+@admin.route("/category/cid/<cid>")
 @login_required
-def category():
-    cid = request.args.get("cid")
-
+def category(cid=None):
     if cid is not None:
-        categories = Category.objects(id=cid)
-        old_category = categories[0]
-        form = categoryForm(name=old_category.name, slug=old_category.slug, description=old_category.description)
-        return render_template("categories.html", form=form)
+        category = Category.objects(id=cid).first()
+        form = categoryForm(category)
+    else:
+        form = categoryForm()
 
-    form = categoryForm()
     if form.validate_on_submit():
-        categories = Category(name=form.name.data, slug=form.slug.data, description=form.description.data)
-        categories.save()
+        if form.category_id.data:
+            category = Category.objects(id=form.category_id.data).first()
+        else:
+            category = Category()
+        category.set_val(form)
+        category.save()
         flash(u"分类保存成功", "success")
         return redirect(url_for("admin.manage_categories"))
-    return render_template("categories.html", form=form)
+
+    return render_template("categories.html", form=form, current_user=current_user)
 
 
+# 删除分类
 @admin.route("/delete-categories", methods=["POST"])
 @login_required
 def delete_categories():
@@ -240,48 +240,39 @@ def delete_categories():
     return redirect(url_for('admin.manage_categories'))
 
 
-# 用户相关
+# 新增用户
 @admin.route("/users", methods=["GET", "POST"])
-@admin.route("/users/<cid>")
+@admin.route("/users/cid/<cid>")
 @login_required
 def users(cid=None):
-    form = userForm()
     if cid:
         change_user = User.objects(id=cid).first()
-        form.user_id.data = cid
-        form.username.data = change_user.username
-        form.email.data = change_user.email
-        form.screenName.data = change_user.screenName
-        form.url.data = change_user.url
-        form.group.data = change_user.group
+        form = userForm(change_user)
+    else:
+        form = userForm()
 
     if form.validate_on_submit():
         if form.user_id.data:
             user = User.objects(id=form.user_id.data).first()
-            user.username = form.username.data
-            user.email = form.email.data
-            user.password = form.password.data
-            user.url = form.url.data
-            user.screenName = form.screenName.data
-            user.group = form.group.data
-            user.save()
         else:
-            user = User(username=form.username.data, password=form.password.data, email=form.email.data, url=form.url.data, screenName=form.screenName.data, group=form.group.data)
-            user.save()
+            user = User()
+        user.set_and_save(form)
         flash(u"用户添加成功", "success")
         return redirect(url_for("admin.manage_users"))
-    return render_template("users.html", form=form)
+    return render_template("users.html", form=form, current_user=current_user)
 
 
+# 管理用户
 @admin.route("/manage-users", methods=["GET", "POST"])
 @admin.route("/manage-users/page/<page>")
 @login_required
 def manage_users(page=1):
-    users = User.objects[(page-1)*5: page*5]
+    users = User.objects[(page - 1) * 5: page * 5]
     pageinate = User.objects.paginate(page=page, per_page=5)
-    return render_template("manage-users.html", users=users, pageinate=pageinate)
+    return render_template("manage-users.html", users=users, pageinate=pageinate, current_user=current_user)
 
 
+# 删除用户
 @admin.route("/delete-users", methods=["GET", "POST"])
 @login_required
 def delete_users():
@@ -297,31 +288,26 @@ def delete_users():
     return redirect(url_for('admin.manage_users'))
 
 
+# 管理评论
+# todo： 下个版本加上
 @admin.route("/manage-comments")
 @login_required
 def manage_comments():
     return "pass"
 
 
+# 网站信息管理
 @admin.route('/options-general', methods=["GET", "POST"])
 @login_required
 def options_general():
-    op = Options.objects.first()
-    form = OptionGeneralForm(title=op.site_title,
-                             url=op.site_url,
-                             keyword=op.site_keyword,
-                             description=op.site_description)
+    if request.method == "GET":
+        option = Options.objects.first()
+        form = OptionGeneralForm(option)
+        return render_template("options-general.html", form=form, current_user=current_user)
 
+    form = OptionGeneralForm()
     if form.validate_on_submit():
-        op.site_url = form.url.data
-        op.site_title = form.title.data
-        op.site_keyword = form.keyword.data
-        op.site_description = form.description.data
-        op.save()
+        option = Options.objects.first()
+        option.set_and_save(form)
         flash(u"网站信息保存成功", "success")
         return redirect(url_for("admin.options_general"))
-    return render_template("options-general.html", form=form)
-
-
-
-
