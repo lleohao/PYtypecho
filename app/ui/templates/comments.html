@@ -1,10 +1,11 @@
 <div id="comments">
     <!-- 多说评论框 start -->
-    <div class="ds-thread" data-thread-key="" data-title="" data-author-key="" data-url=""></div>
+    <div class="ds-thread" data-thread-key="{{ page.id }}" data-title="{{ page.title }}"
+         data-author-key="{{ page.author }}" data-url="http://{{ site.url }}/{{ page.slug }}"></div>
     <!-- 多说评论框 end -->
     <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
     <script type="text/javascript">
-        var duoshuoQuery = {short_name: "lleohao"};
+        var duoshuoQuery = {short_name: "{{ site.duoshuo_name }}"};
         (function () {
             var ds = document.createElement('script');
             ds.type = 'text/javascript';
