@@ -56,3 +56,5 @@ docs/_build/
 .idea/
 venv/
 test/
+app/static/node_modules
+app/static/gulpfile.js
