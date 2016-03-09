@@ -25,6 +25,7 @@
             </div>
 
             <!-- share -->
+            {% if site.duoshuo_name %}
             <div id="comments">
                 <!-- 多说评论框 start -->
                 <div class="ds-thread" data-thread-key="{{ post.id }}" data-title="{{ post.title }}"
@@ -46,6 +47,7 @@
                 <!-- 多说公共JS代码 end -->
                 <!--<h4><?php _e('评论已关闭'); ?></h4>-->
             </div>
+            {% endif %}
         </div>
 
         {#  <div class="pager" role="pager">
