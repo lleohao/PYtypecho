@@ -1,5 +1,5 @@
 /*! normalize.css v1.0.1 | MIT License | git.io/normalize */
-article, aside, details, figcaption, figure, footer, header, hgroup, nav, section, summary {
+article, aside, details, figcaption, figure, footer, header, nav, section, summary {
     display: block
 }
 
@@ -476,6 +476,10 @@ img {
 
 .entry-content p {
     padding: 0 18px;
+}
+
+.entry-content li > p {
+    padding: 0;
 }
 
 .entry-content h1, h2, h3, h4, h5 {

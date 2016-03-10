@@ -51,7 +51,7 @@ def write_post(cid=None):
             post = Content.objects(id=form.content_id.data).first()
         else:
             post = Content(type="post")
-        post.set_val(form, session["username"], "post")
+        post.set_val(form, session["username"], request.form['edit-area-html-code'], "post")
 
         if request.form["submit"] == "save":
             post.status = False
@@ -137,7 +137,7 @@ def write_page(cid=None):
             page = Content.objects(id=form.content_id.data).first()
         else:
             page = Content(type="page")
-        page.set_val(form, session["username"], "page")
+        page.set_val(form, session["username"], request.form['edit-area-html-code'], "page")
 
         if request.form["submit"] == "save":
             page.status = False

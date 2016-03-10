@@ -2,9 +2,7 @@
 import uuid
 from datetime import datetime
 
-from flask import Markup
 from flask.ext.login import UserMixin
-from markdown import markdown
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from . import db, login_manager
@@ -125,11 +123,12 @@ class Content(db.DynamicDocument):
         ]
     }
 
-    def set_val(self, form, author, type):
+    def set_val(self, form, author, html_text, type):
         self.created = datetime.now()
         self.title = form.title.data
         self.slug = create_only_slug(form)
         self.md_text = form.content.data
+        self.html_text = html_text
         self.author = author
         if type == 'post':
             if form.tags.data is not "":
@@ -143,7 +142,6 @@ class Content(db.DynamicDocument):
 
     def clean(self):
         op = Options.objects().first()
-        self.html_text = Markup(markdown(self.md_text, ['markdown.extensions.extra']))
         self.description = op.title + " - " + op.description + " - " + self.md_text[0:150]
 
 
