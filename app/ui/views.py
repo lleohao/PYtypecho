@@ -10,9 +10,9 @@ from . import ui
 @ui.route("/page/<int:page>")
 def index(page=1):
     site = Options.objects().first()
-    posts = Content.objects(type="post")[(page - 1) * 5: page * 5]
-    pages = Content.objects(type="page")
-    pagination = Content.objects(type="post").paginate(page=page, per_page=5)
+    posts = Content.objects(type="post", status=True)[(page - 1) * 5: page * 5]
+    pages = Content.objects(type="page", status=True)
+    pagination = Content.objects(type="post", status=True).paginate(page=page, per_page=5)
     return render_template("index.html", site=site, posts=posts, pages=pages, pagination=pagination)
 
 
@@ -20,7 +20,7 @@ def index(page=1):
 @ui.route("/<slug>")
 def show_page(slug):
     site = Options.objects().first()
-    pages = Content.objects(type="page")
+    pages = Content.objects(type="page", status=True)
     page = Content.objects(slug=slug).first()
     return render_template("page.html", site=site, pages=pages, page=page)
 
@@ -29,7 +29,7 @@ def show_page(slug):
 @ui.route("/post/<slug>")
 def show_post(slug):
     site = Options.objects().first()
-    pages = Content.objects(type="page")
+    pages = Content.objects(type="page", status=True)
     post = Content.objects(slug=slug).first()
     return render_template("post.html", site=site, pages=pages, post=post)
 
@@ -38,8 +38,8 @@ def show_post(slug):
 @ui.route("/archive")
 def show_archive_list():
     site = Options.objects().first()
-    pages = Content.objects(type="page")
-    posts = Content.objects()
+    pages = Content.objects(type="page", status=True)
+    posts = Content.objects(type="post", status=True)
     created_time = []
     for post in posts:
         created_time.append(post.created.strftime("%Y-%m-%d"))
@@ -52,11 +52,11 @@ def show_archive_list():
 @ui.route("/categort/<slug>/page/<int:page>")
 def show_category(slug, page=1):
     site = Options.objects().first()
-    pages = Content.objects(type="page")
+    pages = Content.objects(type="page", status=True)
     category = Category.objects(slug=slug).first()
     title = '分类 "%s" 下的文章' % (category.name)
-    posts = Content.objects(category=category)[(page - 1) * 5: page * 5]
-    pagination = Content.objects(category=category).paginate(page=page, per_page=5)
+    posts = Content.objects(category=category, status=True)[(page - 1) * 5: page * 5]
+    pagination = Content.objects(category=category, status=True).paginate(page=page, per_page=5)
     created_time = []
     for post in posts:
         created_time.append(post.created.strftime("%Y-%m-%d"))
@@ -70,10 +70,10 @@ def show_category(slug, page=1):
 @ui.route("/tag/<slug>/page/<int:page>")
 def show_tag(slug, page=1):
     site = Options.objects().first()
-    pages = Content.objects(type="page")
+    pages = Content.objects(type="page", status=True)
     title = '标签 "%s" 下的文章' % slug
-    posts = Content.objects(tags=slug)[(page - 1) * 5: page * 5]
-    pagination = Content.objects(tags=slug).paginate(page=page, per_page=5)
+    posts = Content.objects(tags=slug, status=True)[(page - 1) * 5: page * 5]
+    pagination = Content.objects(tags=slug, status=True).paginate(page=page, per_page=5)
     created_time = []
     for post in posts:
         created_time.append(post.created.strftime("%Y-%m-%d"))
