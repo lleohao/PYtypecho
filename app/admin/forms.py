@@ -1,8 +1,15 @@
 # -*- coding:utf-8 -*-
 from flask.ext.wtf import Form
 from flask.ext.wtf.html5 import EmailField, URLField
-from wtforms import StringField, SubmitField, PasswordField, TextAreaField, SelectField, HiddenField
+from wtforms import StringField, SubmitField, PasswordField, TextAreaField, SelectField, HiddenField, BooleanField
 from wtforms.validators import InputRequired, EqualTo
+
+
+class LoginForm(Form):
+    username = StringField(u"用户名")
+    password = PasswordField(u"密码")
+    remember = BooleanField()
+    submit = SubmitField(u"登录")
 
 
 class postForm(Form):

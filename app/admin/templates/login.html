@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>用户登录</title>
+    <link rel="stylesheet" href="{{ url_for('admin.static', filename='lib/cssreset/reset.css') }}">
+    <link rel="stylesheet" href="{{ url_for('admin.static', filename='css/base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('admin.static', filename='css/login.cs') }}s">
+</head>
+<body>
+<div class="wrap">
+    <div class="container">
+
+        {%- with messages = get_flashed_messages( with_categories=true ) -%}
+            {% if messages %}
+                <div id="info-box" class="{{ messages[0][0] }}">
+                    <p class="msg">{{ messages[0][1] }}</p>
+                </div>
+            {% endif %}
+        {%- endwith -%}
+
+        <div id="form-content">
+            <form name="login-form" method="post" action="{{ url_for('admin.login') }}">
+                <h2>Pytypecho</h2>
+                <div class="form-group">
+                    <input type="text" name="username" id="username"
+                           placeholder="Username" autocomplete="off">
+                    <input type="password" name="password" id="password"
+                           placeholder="Password">
+                    <input type="checkbox" name="remember" id="remember"><label for="remember" class="remember">&nbsp;Remember
+                    me?</label>
+                    <input type="submit" value="Sign in">
+                    {{ form.csrf_token() }}
+                </div>
+                <p><a href="#">Forget your password?</a></p>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    var require = {baseUrl: "../admin/static/"};
+</script>
+<script data-main="js/login" src="{{ url_for('admin.static', filename="lib/requirejs/require.js") }}"></script>
+</body>
+</html>

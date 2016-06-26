@@ -3,12 +3,40 @@ import math
 from datetime import datetime
 
 from flask import render_template, redirect, flash, request, url_for, session
-from flask.ext.login import login_required, current_user
+from flask.ext.login import login_required, current_user, logout_user, login_fresh, login_user
 from mongoengine import NotUniqueError
 
 from . import admin
-from .forms import postForm, pageForm, categoryForm, userForm, OptionGeneralForm
+from .forms import postForm, pageForm, categoryForm, userForm, OptionGeneralForm, LoginForm
 from ..modules import Category, User, Options, Content
+
+
+# 登录页面相关
+@admin.route("/login", methods=["GET", "POST"])
+def login():
+    # @todo: 日后完成所有内容修复
+    if login_fresh():
+        return redirect(url_for("admin.main"))
+
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = User.objects(username=form.username.data).first()
+        if user is not None and user.verify_password(form.password.data):
+            session["username"] = user.username
+            login_user(user, form.remember)
+            return redirect(url_for("admin.main"))
+        flash(u"用户名或密码错误", 'danger')
+    return render_template("login.html", form=form)
+
+
+@admin.route("/logout")
+@login_required
+def logout():
+    session["username"] = None
+    logout_user()
+    flash(u"您已经退出登录", 'success')
+    return redirect(url_for("admin.login"))
+
 
 
 @admin.route("/")
