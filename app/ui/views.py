@@ -22,8 +22,11 @@ def show_page(slug):
     site = Options.objects().first()
     pages = Content.objects(type="page", status=True)
     page = Content.objects(slug=slug).first()
-    return render_template("page.html", site=site, pages=pages, page=page)
-
+    if page is not None:
+        return render_template("page.html", site=site, pages=pages, page=page)
+    else:
+        # @todo: 添加自定义错误页面
+        return "404 not found"
 
 # 查看文章
 @ui.route("/post/<slug>")
