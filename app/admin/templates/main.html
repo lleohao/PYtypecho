@@ -1,23 +1,97 @@
-{%- extends "admin-base.html" %}
+{% extends "admin-base.html" %}
 
-{% block title %}控制台{% endblock %}
+{% block title %}控制台--网站概况{% endblock %}
 
-{% block navbar %}
-    {{ widget.admin_nav(is_main="active", current_user=current_user) }}
+{% block siteinfo %}网站概况{% endblock %}
+
+{% block breadcrumb %}
+    <li><a href="#">控制台</a></li>
+    <li class="active">网站概况</li>
 {% endblock %}
 
-{%- block page_title %}
-{{ widget.page_title(title="网站概要") }}
-{% endblock -%}
-
-{% block main %}
-<div class="col-md-12 welcomebord">
-    <p>目前有 <a href="{{ url_for('admin.manage_posts') }}">{{ post_nums }}</a> 篇文章。
-{#        , 其中有 <a href="#">{{ site_option.comment_index }}</a> 篇文章有新的评论。</P>#}
-    <p>点击下面的链接快速开始:</p>
-    <ul>
-        <li><a href="{{ url_for('admin.write_post') }}">撰写新文章</a></li>
-        <li><a href="{{ url_for('admin.options_general') }}">系统设置</a></li>
-    </ul>
-</div>
+{% block container %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    快速入口
+                </div>
+                <div class="panel-body">
+                    <ul class="quick-start">
+                        <li><i class="fa fa-caret-right"></i><a href="{{ url_for('admin.write_post') }}"> 撰写文章</a></li>
+                        <li><i class="fa fa-caret-right"></i><a href="{{ url_for('admin.manage_comments') }}"> 查看评论</a>
+                        </li>
+                        <li><i class="fa fa-caret-right"></i><a href="{{ url_for('admin.manage_files') }}"> 文件管理</a>
+                        </li>
+                        <li><i class="fa fa-caret-right"></i><a href="{{ url_for('admin.setting') }}"> 系统设置</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    网站概况
+                </div>
+                <div class="panel-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <col width="25%">
+                                <col width="25%">
+                                <col width="50%">
+                                <th></th>
+                                <th>数量</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>文章数量</td>
+                                <td>{{ count.post }}</td>
+                                <td>
+                                    <a role="button" href="{{ url_for('admin.write_post') }}"
+                                       class="btn btn-xs btn-primary">新增</a>
+                                    <a role="button" href="{{ url_for('admin.manage_posts') }}"
+                                       class="btn btn-xs btn-info">查看</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>页面数量</td>
+                                <td>{{ count.page }}</td>
+                                <td>
+                                    <a role="button" href="{{ url_for('admin.write_page') }}"
+                                       class="btn btn-xs btn-primary">新增</a>
+                                    <a role="button" href="{{ url_for('admin.manage_pages') }}"
+                                       class="btn btn-xs btn-info">查看</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>分类数量</td>
+                                <td>{{ count.category }}</td>
+                                <td>
+                                    <a role="button" href="{{ url_for('admin.category') }}"
+                                       class="btn btn-xs btn-primary">新增</a>
+                                    <a role="button" href="{{ url_for('admin.manage_categories') }}"
+                                       class="btn btn-xs btn-info">查看</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>文件数量</td>
+                                <td>{{ count.file }}</td>
+                                <td>
+                                    <a role="button" href="{{ url_for('admin.upload') }}"
+                                       class="btn btn-xs btn-primary">上传</a>
+                                    <a role="button" href="{{ url_for('admin.manage_files') }}"
+                                       class="btn btn-xs btn-info">查看</a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

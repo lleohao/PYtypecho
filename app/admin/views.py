@@ -14,7 +14,6 @@ from ..modules import Category, User, Options, Content
 # 登录页面相关
 @admin.route("/login", methods=["GET", "POST"])
 def login():
-    # @todo: 日后完成所有内容修复
     if login_fresh():
         return redirect(url_for("admin.main"))
 
@@ -38,14 +37,18 @@ def logout():
     return redirect(url_for("admin.login"))
 
 
-
 @admin.route("/")
 @admin.route("/main")
 @login_required
 def main():
-    # 后台概要页面， 获取文章总数及网站设置内容
-    post_nums = Content.objects(type="post").count()
-    return render_template("main.html", post_nums=post_nums, current_user=current_user)
+    # 后台概要页面， 获取文章、页面、文件、分类信息
+    count = {
+        "post": Content.objects(type="post").count(),
+        "page": Content.objects(type="page").count(),
+        "category": Category.objects.count(),
+        "file": 1  # todo:文件接口待做
+    }
+    return render_template("main.html", count=count)
 
 
 # 编写、修改文章
@@ -272,7 +275,7 @@ def delete_categories():
 @admin.route("/users", methods=["GET", "POST"])
 @admin.route("/users/cid/<cid>")
 @login_required
-def users(cid=None):
+def userinfo(cid=None):
     if cid:
         change_user = User.objects(id=cid).first()
         form = userForm(change_user)
@@ -324,10 +327,22 @@ def manage_comments():
     return "pass"
 
 
+@admin.route("/manage-files")
+@login_required
+def manage_files():
+    return "pass"
+
+
+@admin.route("/upload")
+@login_required
+def upload():
+    return "pass"
+
+
 # 网站信息管理
 @admin.route('/options-general', methods=["GET", "POST"])
 @login_required
-def options_general():
+def setting():
     if request.method == "GET":
         option = Options.objects.first()
         form = OptionGeneralForm(option)
@@ -339,3 +354,9 @@ def options_general():
         option.set_and_save(form)
         flash(u"网站信息保存成功", "success")
         return redirect(url_for("admin.options_general"))
+
+
+@admin.route('/visitor', methods=["GET"])
+@login_required
+def visitor():
+    return "ok"
