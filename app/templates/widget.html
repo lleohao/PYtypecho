@@ -52,7 +52,7 @@
                 <li><a href="{{ url_for('ui.index') }}">网站</a></li>
                 <!--TODO: 个人设置完成后链接至这里-->
                 <li><a href="{{ url_for('admin.manage_users') }}">{{ session['username'] }}</a></li>
-                <li><a href="{{ url_for('auth.logout') }}">登出</a></li>
+                <li><a href="{{ url_for('admin.logout') }}">登出</a></li>
             </ul>
         </div>
         {% endif %}
